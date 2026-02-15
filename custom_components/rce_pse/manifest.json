@@ -2,16 +2,16 @@
     "domain": "rce_pse",
     "name": "Rynkowa Cena Energii",
     "codeowners": [
-        "@Lewa-Reka"
+        "@plebann"
     ],
     "config_flow": true,
-    "documentation": "https://github.com/Lewa-Reka/ha-rce-pse",
+    "documentation": "https://github.com/plebann/ha-rce-pse",
     "integration_type": "service",
     "iot_class": "cloud_polling",
-    "issue_tracker": "https://github.com/Lewa-Reka/ha-rce-pse/issues",
+    "issue_tracker": "https://github.com/plebann/ha-rce-pse/issues",
     "requirements": [
         "aiohttp>=3.8.0",
         "async_timeout>=4.0.0"
     ],
-    "version": "11.22.33"
+    "version": "1.5.1"
 }
