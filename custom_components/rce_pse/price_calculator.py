@@ -122,3 +122,89 @@ class PriceCalculator:
                 continue
         
         return best_window 
+
+    @staticmethod
+    def find_top_windows(
+        data: list[dict],
+        window_start_hour: int,
+        window_end_hour: int,
+        duration_hours: int,
+        top_n: int = 2,
+        is_max: bool = True,
+        distinct_start_hour: bool = True,
+    ) -> list[list[dict]]:
+        if not data or duration_hours <= 0 or top_n <= 0:
+            return []
+
+        duration_periods = int(duration_hours) * 4
+        filtered_data = []
+
+        for record in data:
+            try:
+                end_time = datetime.strptime(record["dtime"], "%Y-%m-%d %H:%M:%S")
+                start_time = end_time - timedelta(minutes=15)
+
+                if start_time.hour >= window_start_hour and start_time.hour < window_end_hour:
+                    filtered_data.append(record)
+            except (ValueError, KeyError):
+                continue
+
+        if len(filtered_data) < duration_periods:
+            return []
+
+        filtered_data.sort(key=lambda x: x["dtime"])
+
+        candidates: list[tuple[float, datetime, list[dict]]] = []
+
+        for i in range(len(filtered_data) - duration_periods + 1):
+            window = filtered_data[i:i + duration_periods]
+
+            is_continuous = True
+            for j in range(len(window) - 1):
+                try:
+                    curr_time = datetime.strptime(window[j]["dtime"], "%Y-%m-%d %H:%M:%S")
+                    next_time = datetime.strptime(window[j + 1]["dtime"], "%Y-%m-%d %H:%M:%S")
+
+                    if next_time != curr_time + timedelta(minutes=15):
+                        is_continuous = False
+                        break
+                except (ValueError, KeyError):
+                    is_continuous = False
+                    break
+
+            if not is_continuous:
+                continue
+
+            try:
+                window_start = datetime.strptime(window[0]["dtime"], "%Y-%m-%d %H:%M:%S") - timedelta(minutes=15)
+                if window_start.minute != 0:
+                    continue
+
+                window_prices = [float(record["rce_pln"]) for record in window]
+                avg_price = sum(window_prices) / len(window_prices)
+            except (ValueError, KeyError):
+                continue
+
+            candidates.append((avg_price, window_start, window))
+
+        if not candidates:
+            return []
+
+        candidates.sort(key=lambda item: item[0], reverse=is_max)
+
+        results = []
+        used_hours = set()
+
+        for _, window_start, window in candidates:
+            start_hour = window_start.hour
+
+            if distinct_start_hour and start_hour in used_hours:
+                continue
+
+            results.append(window)
+            used_hours.add(start_hour)
+
+            if len(results) >= top_n:
+                break
+
+        return results

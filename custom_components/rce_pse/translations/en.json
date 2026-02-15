@@ -95,6 +95,30 @@
             "rce_pse_today_current_vs_average": {
                 "name": "Today Current vs Average"
             },
+            "rce_pse_today_morning_best_price": {
+                "name": "Today Morning Best Price"
+            },
+            "rce_pse_today_morning_2nd_best_price": {
+                "name": "Today Morning 2nd Best Price"
+            },
+            "rce_pse_today_morning_best_price_start_timestamp": {
+                "name": "Today Morning Best Price Start Timestamp"
+            },
+            "rce_pse_today_morning_2nd_best_price_start_timestamp": {
+                "name": "Today Morning 2nd Best Price Start Timestamp"
+            },
+            "rce_pse_today_evening_best_price": {
+                "name": "Today Evening Best Price"
+            },
+            "rce_pse_today_evening_2nd_best_price": {
+                "name": "Today Evening 2nd Best Price"
+            },
+            "rce_pse_today_evening_best_price_start_timestamp": {
+                "name": "Today Evening Best Price Start Timestamp"
+            },
+            "rce_pse_today_evening_2nd_best_price_start_timestamp": {
+                "name": "Today Evening 2nd Best Price Start Timestamp"
+            },
             "rce_pse_today_max_price_hour_start": {
                 "name": "Today Max Price Hour Start"
             },

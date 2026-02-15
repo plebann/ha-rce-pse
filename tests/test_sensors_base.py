@@ -1,7 +1,9 @@
 from __future__ import annotations
 
-import pytest
+from datetime import datetime, timedelta
 from unittest.mock import Mock, MagicMock
+
+import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
@@ -224,6 +226,31 @@ class TestPriceCalculator:
         
         assert optimal_window_float == optimal_window_int
         assert len(optimal_window_float) == 8
+
+    def test_find_top_windows_distinct_full_hour(self):
+        data = [
+            {"rce_pln": "100.00", "dtime": "2024-01-01 07:15:00"},
+            {"rce_pln": "110.00", "dtime": "2024-01-01 07:30:00"},
+            {"rce_pln": "120.00", "dtime": "2024-01-01 07:45:00"},
+            {"rce_pln": "130.00", "dtime": "2024-01-01 08:00:00"},
+            {"rce_pln": "200.00", "dtime": "2024-01-01 08:15:00"},
+            {"rce_pln": "210.00", "dtime": "2024-01-01 08:30:00"},
+            {"rce_pln": "220.00", "dtime": "2024-01-01 08:45:00"},
+            {"rce_pln": "230.00", "dtime": "2024-01-01 09:00:00"},
+        ]
+
+        windows = PriceCalculator.find_top_windows(data, 7, 9, 1, top_n=2, is_max=True)
+
+        assert len(windows) == 2
+
+        window_starts = []
+        for window in windows:
+            first_period_end = datetime.strptime(window[0]["dtime"], "%Y-%m-%d %H:%M:%S")
+            window_start = first_period_end - timedelta(minutes=15)
+            window_starts.append(window_start)
+            assert window_start.minute == 0
+
+        assert window_starts[0].hour != window_starts[1].hour
 
 
 class TestRCEBaseSensor:

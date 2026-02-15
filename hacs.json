@@ -1,5 +1,5 @@
 {
-    "name": "RCE PSE - Rynkowa Cena Energii",
+    "name": "RCE Prices",
     "homeassistant": "2025.1.0",
     "country": [
         "PL"

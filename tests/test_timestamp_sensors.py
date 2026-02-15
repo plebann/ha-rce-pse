@@ -30,6 +30,10 @@ from custom_components.rce_pse.sensors.custom_windows import (
     RCETomorrowExpensiveWindowStartTimestampSensor,
     RCETomorrowExpensiveWindowEndTimestampSensor,
 )
+from custom_components.rce_pse.sensors.today_best_windows import (
+    RCETodayMorningBestPriceStartTimestampSensor,
+    RCETodayEveningSecondBestPriceStartTimestampSensor,
+)
 
 
 @pytest.fixture
@@ -243,6 +247,75 @@ class TestTodayMinPriceTimestampSensors:
             
             timestamp = sensor.native_value
             assert timestamp is None
+
+
+class TestTodayBestWindowTimestampSensors:
+
+    def test_today_morning_best_timestamp_sensor_initialization(self, mock_coordinator):
+        sensor = RCETodayMorningBestPriceStartTimestampSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_pse_today_morning_best_price_start_timestamp"
+        assert sensor._attr_device_class == SensorDeviceClass.TIMESTAMP
+        assert sensor._attr_icon == "mdi:clock-start"
+
+    def test_today_evening_second_best_timestamp_sensor_initialization(self, mock_coordinator):
+        sensor = RCETodayEveningSecondBestPriceStartTimestampSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_pse_today_evening_2nd_best_price_start_timestamp"
+        assert sensor._attr_device_class == SensorDeviceClass.TIMESTAMP
+        assert sensor._attr_icon == "mdi:clock-start"
+
+    def test_today_morning_best_timestamp_with_data(self, mock_coordinator):
+        sensor = RCETodayMorningBestPriceStartTimestampSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 07:15:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 07:30:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 07:45:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 08:00:00", "rce_pln": "400.00"},
+                    ],
+                ]
+
+                timestamp = sensor.native_value
+
+                assert timestamp is not None
+                assert isinstance(timestamp, datetime)
+                assert timestamp.hour == 7
+                assert timestamp.minute == 0
+
+    def test_today_evening_second_best_timestamp_with_data(self, mock_coordinator):
+        sensor = RCETodayEveningSecondBestPriceStartTimestampSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 17:15:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 17:30:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 17:45:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 18:00:00", "rce_pln": "500.00"},
+                    ],
+                    [
+                        {"dtime": "2024-01-01 18:15:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 18:30:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 18:45:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 19:00:00", "rce_pln": "450.00"},
+                    ],
+                ]
+
+                timestamp = sensor.native_value
+
+                assert timestamp is not None
+                assert isinstance(timestamp, datetime)
+                assert timestamp.hour == 18
+                assert timestamp.minute == 0
 
 
 class TestTomorrowMaxPriceTimestampSensors:
