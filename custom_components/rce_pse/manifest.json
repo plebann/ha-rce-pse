@@ -1,6 +1,6 @@
 {
     "domain": "rce_pse",
-    "name": "Rynkowa Cena Energii",
+    "name": "RCE Prices",
     "codeowners": [
         "@plebann"
     ],
