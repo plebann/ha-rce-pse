@@ -1,34 +1,122 @@
-name: Create HACS Release
+name: Create Release
 
 on:
-  release:
-    types: [published, edited]
+  workflow_dispatch:
+    inputs:
+      version_increment:
+        description: 'Version increment type'
+        required: false
+        default: 'patch'
+        type: choice
+        options:
+          - patch
+          - minor
+          - major
 
-permissions: {}
+run-name: Create Release (${{ github.event.inputs.version_increment || 'patch' }} increment)
+
+env:
+  integration_code: rce_prices
+  integration_name: RCE Prices
 
 jobs:
   release:
-    name: "Release"
     runs-on: ubuntu-latest
     permissions:
       contents: write
-
+    
     steps:
-      - name: "Checkout the repository"
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Set Vars
-        run: |
-          echo "version=$(echo '${{ github.event.release.name }}' | cut -c 2-)" >> $GITHUB_ENV
-      - name: Set Version
-        run: |
-          sed -i "s/11\.22\.33/$version/g" ${{ github.workspace }}/custom_components/rce_prices/manifest.json
-      - name: "ZIP the integration directory"
-        shell: bash
-        run: |
-          cd "${{ github.workspace }}/custom_components/rce_prices"
-          zip -r ../rce_prices.zip . -x "*.git*" "*.git/*" "*.github/*"
-      - name: "Upload the ZIP file to the release"
-        uses: softprops/action-gh-release@v2
-        if: startsWith(github.ref, 'refs/tags/')
         with:
-          files: ${{ github.workspace }}/custom_components/*.zip
+          fetch-depth: 0
+      
+      - name: Get latest tag
+        id: get_latest_tag
+        run: |
+          # Get the latest tag, or use 0.0.0 if no tags exist
+          LATEST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "v0.0.0")
+          echo "latest_tag=${LATEST_TAG}" >> $GITHUB_OUTPUT
+          echo "Latest tag: ${LATEST_TAG}"
+
+      - name: Calculate next version
+        id: version
+        run: |
+          LATEST_TAG="${{ steps.get_latest_tag.outputs.latest_tag }}"
+          VERSION=${LATEST_TAG#v}
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$VERSION"
+
+          INCREMENT="${{ github.event.inputs.version_increment || 'patch' }}"
+
+          if [ "$INCREMENT" = "major" ]; then
+            MAJOR=$((MAJOR+1))
+            MINOR=0
+            PATCH=0
+          elif [ "$INCREMENT" = "minor" ]; then
+            MINOR=$((MINOR+1))
+            PATCH=0
+          else
+            PATCH=$((PATCH+1))
+          fi
+
+          echo "version=${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+          echo "tag=v${MAJOR}.${MINOR}.${PATCH}" >> $GITHUB_OUTPUT
+
+      - name: Update manifest.json (local only, not committed)
+        run: |
+          cd custom_components/${{ env.integration_code }}
+          jq --arg v "${{ steps.version.outputs.version }}" '.version = $v' manifest.json > tmp.json && mv tmp.json manifest.json
+
+      - name: Create release archive
+        run: |
+          cd custom_components/${{ env.integration_code }}
+          zip -r ../../${{ env.integration_code }}.zip . -x "__pycache__/*" "**/__pycache__/*"
+
+      - name: Configure git identity
+        run: |
+          git config user.name "${{ github.actor }} (GitHub Actions)"
+          git config user.email "${{ github.actor }}@users.noreply.github.com"
+
+      - name: Create tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          TAG="${{ steps.version.outputs.tag }}"
+          git tag -a "$TAG" -m "Release $TAG"
+          git push origin "$TAG"
+
+      - name: Generate release notes
+        id: release_notes
+        run: |
+          NEW_TAG="${{ steps.version.outputs.tag }}"
+          LATEST_TAG="${{ steps.get_latest_tag.outputs.latest_tag }}"
+          
+          # Generate changelog
+          if [ "$LATEST_TAG" = "v0.0.0" ]; then
+            CHANGELOG="Initial release of ${{ env.integration_name }} integration for Home Assistant."
+          else
+            CHANGELOG=$(git log ${LATEST_TAG}..HEAD --pretty=format:"- %s" --no-merges)
+            if [ -z "$CHANGELOG" ]; then
+              CHANGELOG="- Minor improvements and bug fixes"
+            fi
+          fi
+          
+          echo "changelog<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGELOG" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+      
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ steps.version.outputs.tag }}
+          name: Release ${{ steps.version.outputs.version }}
+          body: |
+            ## ${{ env.integration_name }} ${{ steps.version.outputs.version }}
+            
+            ### Changes
+            ${{ steps.release_notes.outputs.changelog }} 
+          files: |
+            ${{ env.integration_code }}.zip
+          draft: false
+          prerelease: false
