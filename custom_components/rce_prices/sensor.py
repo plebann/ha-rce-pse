@@ -9,11 +9,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from .const import DOMAIN
 from .sensors import (
     RCETodayMainSensor,
-    RCETodayKwhPriceSensor,
-    RCENextHourPriceSensor,
-    RCENext2HoursPriceSensor,
-    RCENext3HoursPriceSensor,
-    RCEPreviousHourPriceSensor,
     RCETodayAvgPriceSensor,
     RCETodayMaxPriceSensor,
     RCETodayMinPriceSensor,
@@ -54,28 +49,6 @@ from .sensors import (
     RCETomorrowMedianPriceSensor,
     RCETomorrowTodayAvgComparisonSensor,
 )
-from .sensors.custom_windows import (
-    RCETodayCheapestWindowStartSensor,
-    RCETodayCheapestWindowEndSensor,
-    RCETodayCheapestWindowRangeSensor,
-    RCETodayExpensiveWindowStartSensor,
-    RCETodayExpensiveWindowEndSensor,
-    RCETodayExpensiveWindowRangeSensor,
-    RCETomorrowCheapestWindowStartSensor,
-    RCETomorrowCheapestWindowEndSensor,
-    RCETomorrowCheapestWindowRangeSensor,
-    RCETomorrowExpensiveWindowStartSensor,
-    RCETomorrowExpensiveWindowEndSensor,
-    RCETomorrowExpensiveWindowRangeSensor,
-    RCETodayCheapestWindowStartTimestampSensor,
-    RCETodayCheapestWindowEndTimestampSensor,
-    RCETodayExpensiveWindowStartTimestampSensor,
-    RCETodayExpensiveWindowEndTimestampSensor,
-    RCETomorrowCheapestWindowStartTimestampSensor,
-    RCETomorrowCheapestWindowEndTimestampSensor,
-    RCETomorrowExpensiveWindowStartTimestampSensor,
-    RCETomorrowExpensiveWindowEndTimestampSensor,
-)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -90,11 +63,6 @@ async def async_setup_entry(
     
     sensors = [
         RCETodayMainSensor(coordinator),
-        RCETodayKwhPriceSensor(coordinator),
-        RCENextHourPriceSensor(coordinator),
-        RCENext2HoursPriceSensor(coordinator),
-        RCENext3HoursPriceSensor(coordinator),
-        RCEPreviousHourPriceSensor(coordinator),
         RCETodayAvgPriceSensor(coordinator),
         RCETodayMaxPriceSensor(coordinator),
         RCETodayMinPriceSensor(coordinator),
@@ -134,26 +102,6 @@ async def async_setup_entry(
         RCETomorrowMaxPriceRangeSensor(coordinator),
         RCETomorrowMedianPriceSensor(coordinator),
         RCETomorrowTodayAvgComparisonSensor(coordinator),
-        RCETodayCheapestWindowStartSensor(coordinator, config_entry),
-        RCETodayCheapestWindowEndSensor(coordinator, config_entry),
-        RCETodayCheapestWindowRangeSensor(coordinator, config_entry),
-        RCETodayExpensiveWindowStartSensor(coordinator, config_entry),
-        RCETodayExpensiveWindowEndSensor(coordinator, config_entry),
-        RCETodayExpensiveWindowRangeSensor(coordinator, config_entry),
-        RCETomorrowCheapestWindowStartSensor(coordinator, config_entry),
-        RCETomorrowCheapestWindowEndSensor(coordinator, config_entry),
-        RCETomorrowCheapestWindowRangeSensor(coordinator, config_entry),
-        RCETomorrowExpensiveWindowStartSensor(coordinator, config_entry),
-        RCETomorrowExpensiveWindowEndSensor(coordinator, config_entry),
-        RCETomorrowExpensiveWindowRangeSensor(coordinator, config_entry),
-        RCETodayCheapestWindowStartTimestampSensor(coordinator, config_entry),
-        RCETodayCheapestWindowEndTimestampSensor(coordinator, config_entry),
-        RCETodayExpensiveWindowStartTimestampSensor(coordinator, config_entry),
-        RCETodayExpensiveWindowEndTimestampSensor(coordinator, config_entry),
-        RCETomorrowCheapestWindowStartTimestampSensor(coordinator, config_entry),
-        RCETomorrowCheapestWindowEndTimestampSensor(coordinator, config_entry),
-        RCETomorrowExpensiveWindowStartTimestampSensor(coordinator, config_entry),
-        RCETomorrowExpensiveWindowEndTimestampSensor(coordinator, config_entry),
     ]
     
     _LOGGER.debug("Adding %d RCE Prices sensors to Home Assistant", len(sensors))

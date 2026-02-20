@@ -9,70 +9,13 @@ from homeassistant.helpers import selector
 
 from .const import (
     DOMAIN,
-    CONF_CHEAPEST_TIME_WINDOW_START,
-    CONF_CHEAPEST_TIME_WINDOW_END,
-    CONF_CHEAPEST_WINDOW_DURATION_HOURS,
-    CONF_EXPENSIVE_TIME_WINDOW_START,
-    CONF_EXPENSIVE_TIME_WINDOW_END,
-    CONF_EXPENSIVE_WINDOW_DURATION_HOURS,
     CONF_USE_HOURLY_PRICES,
-    DEFAULT_TIME_WINDOW_START,
-    DEFAULT_TIME_WINDOW_END,
-    DEFAULT_WINDOW_DURATION_HOURS,
     DEFAULT_USE_HOURLY_PRICES,
 )
 
 _LOGGER = logging.getLogger(__name__)
 
 CONFIG_SCHEMA = vol.Schema({
-    vol.Required(CONF_CHEAPEST_TIME_WINDOW_START, default=DEFAULT_TIME_WINDOW_START): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=0,
-            max=23,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
-    vol.Required(CONF_CHEAPEST_TIME_WINDOW_END, default=DEFAULT_TIME_WINDOW_END): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=1,
-            max=24,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
-    vol.Required(CONF_CHEAPEST_WINDOW_DURATION_HOURS, default=DEFAULT_WINDOW_DURATION_HOURS): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=1,
-            max=24,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
-    vol.Required(CONF_EXPENSIVE_TIME_WINDOW_START, default=DEFAULT_TIME_WINDOW_START): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=0,
-            max=23,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
-    vol.Required(CONF_EXPENSIVE_TIME_WINDOW_END, default=DEFAULT_TIME_WINDOW_END): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=1,
-            max=24,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
-    vol.Required(CONF_EXPENSIVE_WINDOW_DURATION_HOURS, default=DEFAULT_WINDOW_DURATION_HOURS): selector.NumberSelector(
-        selector.NumberSelectorConfig(
-            min=1,
-            max=24,
-            step=1,
-            mode=selector.NumberSelectorMode.BOX,
-        )
-    ),
     vol.Optional(CONF_USE_HOURLY_PRICES, default=DEFAULT_USE_HOURLY_PRICES): selector.BooleanSelector(
         selector.BooleanSelectorConfig()
     ),
@@ -98,29 +41,17 @@ class RCEConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             _LOGGER.debug("RCE Prices integration already configured, aborting")
             return self.async_abort(reason="single_instance_allowed")
 
-        errors = {}
-
         if user_input is not None:
-            cheapest_start = user_input.get(CONF_CHEAPEST_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            cheapest_end = user_input.get(CONF_CHEAPEST_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            expensive_start = user_input.get(CONF_EXPENSIVE_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            expensive_end = user_input.get(CONF_EXPENSIVE_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            
-            if cheapest_start >= cheapest_end:
-                errors["base"] = "invalid_time_window"
-            elif expensive_start >= expensive_end:
-                errors["base"] = "invalid_time_window"
-            else:
-                _LOGGER.debug("Creating RCE Prices config entry with options: %s", user_input)
-                await self.async_set_unique_id("rce_prices")
-                self._abort_if_unique_id_configured()
-                return self.async_create_entry(title="RCE Prices", data=user_input)
+            _LOGGER.debug("Creating RCE Prices config entry with options: %s", user_input)
+            await self.async_set_unique_id("rce_prices")
+            self._abort_if_unique_id_configured()
+            return self.async_create_entry(title="RCE Prices", data=user_input)
 
         _LOGGER.debug("Showing RCE Prices configuration form")
         return self.async_show_form(
             step_id="user", 
             data_schema=CONFIG_SCHEMA,
-            errors=errors
+            errors={}
         )
 
 
@@ -129,90 +60,12 @@ class RCEOptionsFlow(config_entries.OptionsFlow):
     async def async_step_init(
         self, user_input: dict[str, any] | None = None
     ) -> FlowResult:
-        errors = {}
-
         if user_input is not None:
-            cheapest_start = user_input.get(CONF_CHEAPEST_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            cheapest_end = user_input.get(CONF_CHEAPEST_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            expensive_start = user_input.get(CONF_EXPENSIVE_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            expensive_end = user_input.get(CONF_EXPENSIVE_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            
-            if cheapest_start >= cheapest_end:
-                errors["base"] = "invalid_time_window"
-            elif expensive_start >= expensive_end:
-                errors["base"] = "invalid_time_window"
-            else:
-                _LOGGER.debug("Updating RCE Prices options: %s", user_input)
-                return self.async_create_entry(title="", data=user_input)
+            _LOGGER.debug("Updating RCE Prices options: %s", user_input)
+            return self.async_create_entry(title="", data=user_input)
 
         current_data = self.config_entry.options if self.config_entry.options else self.config_entry.data
         options_schema = vol.Schema({
-            vol.Required(
-                CONF_CHEAPEST_TIME_WINDOW_START, 
-                default=current_data.get(CONF_CHEAPEST_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=0,
-                    max=23,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_CHEAPEST_TIME_WINDOW_END, 
-                default=current_data.get(CONF_CHEAPEST_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=1,
-                    max=24,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_CHEAPEST_WINDOW_DURATION_HOURS, 
-                default=current_data.get(CONF_CHEAPEST_WINDOW_DURATION_HOURS, DEFAULT_WINDOW_DURATION_HOURS)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=1,
-                    max=24,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_EXPENSIVE_TIME_WINDOW_START, 
-                default=current_data.get(CONF_EXPENSIVE_TIME_WINDOW_START, DEFAULT_TIME_WINDOW_START)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=0,
-                    max=23,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_EXPENSIVE_TIME_WINDOW_END, 
-                default=current_data.get(CONF_EXPENSIVE_TIME_WINDOW_END, DEFAULT_TIME_WINDOW_END)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=1,
-                    max=24,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
-            vol.Required(
-                CONF_EXPENSIVE_WINDOW_DURATION_HOURS, 
-                default=current_data.get(CONF_EXPENSIVE_WINDOW_DURATION_HOURS, DEFAULT_WINDOW_DURATION_HOURS)
-            ): selector.NumberSelector(
-                selector.NumberSelectorConfig(
-                    min=1,
-                    max=24,
-                    step=1,
-                    mode=selector.NumberSelectorMode.BOX,
-                )
-            ),
             vol.Optional(
                 CONF_USE_HOURLY_PRICES, 
                 default=current_data.get(CONF_USE_HOURLY_PRICES, DEFAULT_USE_HOURLY_PRICES)
@@ -224,5 +77,5 @@ class RCEOptionsFlow(config_entries.OptionsFlow):
         return self.async_show_form(
             step_id="init",
             data_schema=options_schema,
-            errors=errors
+            errors={}
         ) 

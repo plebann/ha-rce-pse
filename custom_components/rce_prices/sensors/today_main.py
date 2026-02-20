@@ -4,7 +4,6 @@ from datetime import timedelta
 from typing import Any, TYPE_CHECKING
 
 from .base import RCEBaseSensor
-from ..const import TAX_RATE
 
 if TYPE_CHECKING:
     from ..coordinator import RCEPSEDataUpdateCoordinator
@@ -48,21 +47,3 @@ class RCETodayMainSensor(RCEBaseSensor):
         }
         
         return attributes
-
-
-class RCETodayKwhPriceSensor(RCEBaseSensor):
-
-    def __init__(self, coordinator: RCEPSEDataUpdateCoordinator) -> None:
-        super().__init__(coordinator, "today_kwh_price")
-        self._attr_native_unit_of_measurement = "PLN/kWh"
-        self._attr_icon = "mdi:cash"
-
-    @property
-    def native_value(self) -> float | None:
-        current_data = self.get_current_price_data()
-        if current_data:
-            price = float(current_data["rce_pln_neg_to_zero"])
-            if price <= 0:
-                return 0
-            return round((price / 1000) * (1 + TAX_RATE), 6)
-        return None

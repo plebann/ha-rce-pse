@@ -86,7 +86,7 @@ class TestRCEPSEConfigFlow:
                 result = await flow.async_step_user(user_input={})
                 
                 assert result["type"] == "create_entry"
-                mock_create_entry.assert_called_once_with(title="RCE PSE", data={})
+                mock_create_entry.assert_called_once_with(title="RCE Prices", data={})
 
     @pytest.mark.asyncio
     async def test_config_flow_user_step_with_hourly_prices_option(self, mock_hass):
@@ -108,7 +108,7 @@ class TestRCEPSEConfigFlow:
                 result = await flow.async_step_user(user_input=user_input)
                 
                 assert result["type"] == "create_entry"
-                mock_create_entry.assert_called_once_with(title="RCE PSE", data=user_input)
+                mock_create_entry.assert_called_once_with(title="RCE Prices", data=user_input)
 
     @pytest.mark.asyncio
     async def test_config_flow_user_step_no_input(self, mock_hass):

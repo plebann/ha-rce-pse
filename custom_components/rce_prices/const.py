@@ -13,20 +13,8 @@ API_FIRST: Final[int] = 200
 
 TAX_RATE: Final[float] = 0.23
 
-CONF_CHEAPEST_TIME_WINDOW_START: Final[str] = "cheapest_time_window_start"
-CONF_CHEAPEST_TIME_WINDOW_END: Final[str] = "cheapest_time_window_end"
-CONF_CHEAPEST_WINDOW_DURATION_HOURS: Final[str] = "cheapest_window_duration_hours"
-
-CONF_EXPENSIVE_TIME_WINDOW_START: Final[str] = "expensive_time_window_start"
-CONF_EXPENSIVE_TIME_WINDOW_END: Final[str] = "expensive_time_window_end"
-CONF_EXPENSIVE_WINDOW_DURATION_HOURS: Final[str] = "expensive_window_duration_hours"
-
-CONF_WINDOW_DURATION_HOURS: Final[str] = "window_duration_hours"
 CONF_USE_HOURLY_PRICES: Final[str] = "use_hourly_prices"
 
-DEFAULT_TIME_WINDOW_START: Final[int] = 0  
-DEFAULT_TIME_WINDOW_END: Final[int] = 24   
-DEFAULT_WINDOW_DURATION_HOURS: Final[int] = 2
 DEFAULT_USE_HOURLY_PRICES: Final[bool] = False 
 
 MORNING_BEST_WINDOW_START_HOUR: Final[int] = 7

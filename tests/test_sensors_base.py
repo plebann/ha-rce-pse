@@ -7,11 +7,8 @@ import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity import EntityDescription
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
-from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from custom_components.rce_prices.const import CONF_CHEAPEST_TIME_WINDOW_START, CONF_CHEAPEST_TIME_WINDOW_END, CONF_CHEAPEST_WINDOW_DURATION_HOURS
 from custom_components.rce_prices.sensors.base import PriceCalculator, RCEBaseSensor
-from custom_components.rce_prices.sensors.custom_windows import RCECustomWindowSensor
 
 
 class TestPriceCalculator:
@@ -415,72 +412,3 @@ class TestRCEBaseSensor:
             assert result["rce_pln"] == "310.00"
 
 
-class TestRCECustomWindowSensor:
-
-    def test_get_config_value_from_options(self, mock_coordinator):
-        mock_config_entry = Mock()
-        mock_config_entry.data = {"test_key": "data_value"}
-        mock_config_entry.options = {"test_key": "options_value"}
-        
-        sensor = RCECustomWindowSensor(mock_coordinator, mock_config_entry, "test_sensor")
-        
-        value = sensor.get_config_value("test_key", "default_value")
-        assert value == "options_value"
-
-    def test_get_config_value_from_data_fallback(self, mock_coordinator):
-        mock_config_entry = Mock()
-        mock_config_entry.data = {"test_key": "data_value"}
-        mock_config_entry.options = None
-        
-        sensor = RCECustomWindowSensor(mock_coordinator, mock_config_entry, "test_sensor")
-        
-        value = sensor.get_config_value("test_key", "default_value")
-        assert value == "data_value"
-
-    def test_get_config_value_from_data_when_not_in_options(self, mock_coordinator):
-        mock_config_entry = Mock()
-        mock_config_entry.data = {"test_key": "data_value"}
-        mock_config_entry.options = {"other_key": "options_value"}
-        
-        sensor = RCECustomWindowSensor(mock_coordinator, mock_config_entry, "test_sensor")
-        
-        value = sensor.get_config_value("test_key", "default_value")
-        assert value == "data_value"
-
-    def test_get_config_value_default(self):
-        config_entry = MockConfigEntry(
-            domain="rce_prices",
-            data={},
-            options={}
-        )
-        coordinator = MagicMock()
-        sensor = RCECustomWindowSensor(coordinator, config_entry, "test")
-        
-        value = sensor.get_config_value("non_existent_key", "default_value")
-        assert value == "default_value"
-
-    def test_get_config_value_converts_float_to_int_for_window_keys(self):
-        config_entry = MockConfigEntry(
-            domain="rce_prices",
-            data={
-                CONF_CHEAPEST_TIME_WINDOW_START: 8.0,
-                CONF_CHEAPEST_TIME_WINDOW_END: 20.0,
-                CONF_CHEAPEST_WINDOW_DURATION_HOURS: 2.0,
-                "other_key": 5.5
-            },
-            options={}
-        )
-        coordinator = MagicMock()
-        sensor = RCECustomWindowSensor(coordinator, config_entry, "test")
-        
-        assert sensor.get_config_value(CONF_CHEAPEST_TIME_WINDOW_START, 0) == 8
-        assert type(sensor.get_config_value(CONF_CHEAPEST_TIME_WINDOW_START, 0)) == int
-        
-        assert sensor.get_config_value(CONF_CHEAPEST_TIME_WINDOW_END, 24) == 20
-        assert type(sensor.get_config_value(CONF_CHEAPEST_TIME_WINDOW_END, 24)) == int
-        
-        assert sensor.get_config_value(CONF_CHEAPEST_WINDOW_DURATION_HOURS, 2) == 2
-        assert type(sensor.get_config_value(CONF_CHEAPEST_WINDOW_DURATION_HOURS, 2)) == int
-        
-        assert sensor.get_config_value("other_key", 0) == 5.5
-        assert type(sensor.get_config_value("other_key", 0)) == float 

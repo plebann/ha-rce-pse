@@ -6,6 +6,7 @@ from unittest.mock import AsyncMock, Mock, patch
 import pytest
 from homeassistant.core import HomeAssistant
 from homeassistant.util import dt as dt_util
+import homeassistant.core as ha_core
 
 from custom_components.rce_prices.coordinator import RCEPSEDataUpdateCoordinator
 
@@ -26,10 +27,13 @@ def disable_frame_report_usage():
 
 
 @pytest.fixture(autouse=True)
-def cleanup_hass():
-    """Clean up the global hass reference after each test."""
+def cleanup_hass_reference():
+    """Reset Home Assistant global hass reference between tests."""
+    if hasattr(ha_core, "_hass") and hasattr(ha_core._hass, "hass"):
+        ha_core._hass.hass = None
     yield
-    _hass.hass = None
+    if hasattr(ha_core, "_hass") and hasattr(ha_core._hass, "hass"):
+        ha_core._hass.hass = None
 
 
 @pytest.fixture

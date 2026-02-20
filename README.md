@@ -39,7 +39,7 @@ Instalation & Presentation: https://youtu.be/6N71uXgf9yc
 
 1. Go to **Settings** > **Integrations**
 2. Click **Add Integration** and search for "RCE Prices"
-3. Configure the time window settings (see below)
+3. Configure the source price settings (see below)
 4. Click **Submit** to complete the setup
 
 ## Usage Examples
@@ -72,57 +72,23 @@ Both cards can be easily customized to match your dashboard theme and specific n
 ## Features
 
 - **Real-time price monitoring** - Current electricity price with 15-minute precision
-- **Historical data** - Previous hour pricing information  
-- **Future price forecasting** - Prices for next 1-3 hours ahead
 - **Daily statistics** - Comprehensive price analysis (average, min, max, median)
 - **Tomorrow's data** - Next day pricing available after 14:00 CET
 - **Price comparison** - Today vs tomorrow percentage differences
-- **Optimal time windows** - Configurable search for cheapest and most expensive periods
-- **Smart scheduling** - Find best times for energy-intensive activities
-- **Peak avoidance** - Identify and avoid high-cost electricity periods
+- **Optimal time windows** - Automatic detection of cheapest and most expensive periods
+- **Smart scheduling** - Built-in morning/evening best-price indicators
+- **Peak avoidance** - Built-in high-cost window detection
 - **Time range display** - Easy-to-read time ranges (e.g., "23:00 - 01:00")
 - **Hourly price averaging** - Optional hourly price calculation for net-billing settlements
 - **Automatic updates** - Data refreshed every 30 minutes from official PSE API
 
 ## Configuration
 
-After installing the integration, you can configure it through the Home Assistant UI. The integration offers several customization options for optimal time windows that help you find the best electricity prices for your needs.
+After installing the integration, you can configure it through the Home Assistant UI.
 
 ### Configuration Options
 
-The integration provides advanced configuration options to customize how it searches for optimal electricity price windows:
-
-#### Cheapest Hours Search Settings
-
-These settings control how the integration finds the most economical electricity periods:
-
-- **Start Hour** (0-23): Beginning of the time window to search for cheapest hours
-  - *Default*: 0 (midnight)
-  - *Example*: Set to 22 to search from 10 PM onwards
-
-- **End Hour** (1-24): End of the time window to search for cheapest hours  
-  - *Default*: 24 (midnight next day)
-  - *Example*: Set to 6 to search until 6 AM
-
-- **Duration (hours)** (1-24): Length of the cheapest continuous time window to find
-  - *Default*: 2 hours
-  - *Example*: Set to 3 to find 3-hour blocks of cheapest electricity
-
-#### Most Expensive Hours Search Settings
-
-These settings control how the integration finds the most expensive electricity periods (useful for avoiding high-cost times):
-
-- **Start Hour** (0-23): Beginning of the time window to search for most expensive hours
-  - *Default*: 0 (midnight)
-  - *Example*: Set to 16 to search from 4 PM onwards
-
-- **End Hour** (1-24): End of the time window to search for most expensive hours
-  - *Default*: 24 (midnight next day)  
-  - *Example*: Set to 20 to search until 8 PM
-
-- **Duration (hours)** (1-24): Length of the most expensive continuous time window to find
-  - *Default*: 2 hours
-  - *Example*: Set to 1 to find 1-hour blocks of most expensive electricity
+The integration provides configuration options for handling source prices:
 
 #### Hourly Prices Option
 
@@ -150,46 +116,11 @@ You can modify these settings at any time:
 
 The integration will automatically reload with your new settings.
 
-### Configuration Examples
-
-**Example 1: Night Charging (Electric Vehicle)**
-- Cheapest Hours: Start=22, End=6, Duration=4
-- Find 4 cheapest consecutive hours between 10 PM and 6 AM
-
-**Example 2: Business Hours Optimization**  
-- Most Expensive Hours: Start=8, End=18, Duration=2
-- Avoid the 2 most expensive consecutive hours during business hours
-
-**Example 3: Peak Avoidance**
-- Most Expensive Hours: Start=17, End=21, Duration=1  
-- Identify the single most expensive hour during evening peak
-
-### Additional Sensors
-
-When you configure custom time windows, the integration provides additional sensors:
-
-**For Today:**
-- Cheapest Window Start/End/Range
-- Most Expensive Window Start/End/Range
-
-**For Tomorrow:**
-- Cheapest Window Start/End/Range  
-- Most Expensive Window Start/End/Range
-
-These sensors automatically update based on your configured search parameters and provide precise time ranges in HH:MM format.
-
 ## Sensors
 
 ### Main Sensors
 - **Price** - Current electricity price (with all daily prices as attributes)
-- **Price for kWh** - Dedicated for HomeAssistant Energy dashboard (converts PLN/MWh to PLN/kWh, includes 23% VAT, negative prices converted to 0)
 - **Tomorrow Price** - Tomorrow's price (available after 14:00 CET) (with all prices for the next day as attributes)
-
-### Future Price Sensors
-- **Next Hour Price** - Price for the next hour
-- **Price in 2 Hours** - Price in 2 hours
-- **Price in 3 Hours** - Price in 3 hours
-- **Previous Hour Price** - Price from the previous hour
 
 ### Today's Statistics
 - **Today Average Price** - Average price for today
@@ -215,27 +146,11 @@ These sensors automatically update based on your configured search parameters an
 - **Tomorrow Max Price Range** - Time range of highest price period tomorrow
 - **Tomorrow Min Price Range** - Time range of lowest price period tomorrow
 
-### Custom Time Window Sensors
-
-Based on your configuration settings, the integration provides additional sensors for optimal time windows:
-
-#### Today's Custom Windows
-- **Today Cheapest Window Start** - Start time of cheapest configured window
-- **Today Cheapest Window End** - End time of cheapest configured window  
-- **Today Cheapest Window Range** - Time range of cheapest window (e.g., "23:00 - 01:00")
-- **Today Expensive Window Start** - Start time of most expensive configured window
-- **Today Expensive Window End** - End time of most expensive configured window
-- **Today Expensive Window Range** - Time range of most expensive window
-
-#### Tomorrow's Custom Windows (available after 14:00 CET)
-- **Tomorrow Cheapest Window Start** - Start time of cheapest configured window
-- **Tomorrow Cheapest Window End** - End time of cheapest configured window
-- **Tomorrow Cheapest Window Range** - Time range of cheapest window
-- **Tomorrow Expensive Window Start** - Start time of most expensive configured window  
-- **Tomorrow Expensive Window End** - End time of most expensive configured window
-- **Tomorrow Expensive Window Range** - Time range of most expensive window
-
-All time values are provided in 24-hour format (HH:MM) and automatically update based on current market data and your configuration settings.
+### Best Time Windows
+- **Today Morning Best Price** - Lowest price in morning best window
+- **Today Morning 2nd Best Price** - Second-lowest price in morning best window
+- **Today Evening Best Price** - Lowest price in evening best window
+- **Today Evening 2nd Best Price** - Second-lowest price in evening best window
 
 ## Binary Sensors
 
@@ -247,13 +162,6 @@ These sensors indicate whether you are currently within the most expensive or ch
 
 - **Today Min Price Window Active** - `true` when currently within the lowest price period of the day
 - **Today Max Price Window Active** - `true` when currently within the highest price period of the day
-
-### Custom Window Binary Sensors
-
-Based on your configuration settings, these sensors indicate whether you are currently within your configured optimal time windows:
-
-- **Today Cheapest Window Active** - `true` when currently within your configured cheapest time window
-- **Today Expensive Window Active** - `true` when currently within your configured most expensive time window
 
 ## Debugging
 

@@ -5,27 +5,12 @@
                 "title": "RCE Prices Configuration",
                 "description": "Set up the RCE Prices integration",
                 "data": {
-                    "cheapest_time_window_start": "Cheapest - time window start (hour)",
-                    "cheapest_time_window_end": "Cheapest - time window end (hour)",
-                    "cheapest_window_duration_hours": "Cheapest - search window duration (hours)",
-                    "expensive_time_window_start": "Most expensive - time window start (hour)",
-                    "expensive_time_window_end": "Most expensive - time window end (hour)",
-                    "expensive_window_duration_hours": "Most expensive - search window duration (hours)",
                     "use_hourly_prices": "Use hourly prices"
                 },
                 "data_description": {
-                    "cheapest_time_window_start": "Starting hour for searching cheapest windows (0-23)",
-                    "cheapest_time_window_end": "Ending hour for searching cheapest windows (1-24)",
-                    "cheapest_window_duration_hours": "Duration of continuous cheapest time window (1-24 hours)",
-                    "expensive_time_window_start": "Starting hour for searching most expensive windows (0-23)",
-                    "expensive_time_window_end": "Ending hour for searching most expensive windows (1-24)",
-                    "expensive_window_duration_hours": "Duration of continuous most expensive time window (1-24 hours)",
                     "use_hourly_prices": "Useful in net-billing settlements due to prosumer metering with hourly accuracy despite 15-minute prices. In this mode, the average price for a given hour is calculated from published quarter-hour prices. Settlement according to Art. 4b sec. 11 of the Ustawa o OZE"
                 }
             }
-        },
-        "error": {
-            "invalid_time_window": "Start hour must be earlier than end hour"
         },
         "abort": {
             "single_instance_allowed": "Only a single configuration of RCE Prices is allowed."
@@ -37,48 +22,18 @@
                 "title": "RCE Prices Settings",
                 "description": "Modify RCE Prices integration settings",
                 "data": {
-                    "cheapest_time_window_start": "Cheapest - time window start (hour)",
-                    "cheapest_time_window_end": "Cheapest - time window end (hour)",
-                    "cheapest_window_duration_hours": "Cheapest - search window duration (hours)",
-                    "expensive_time_window_start": "Most expensive - time window start (hour)",
-                    "expensive_time_window_end": "Most expensive - time window end (hour)",
-                    "expensive_window_duration_hours": "Most expensive - search window duration (hours)",
                     "use_hourly_prices": "Use hourly prices"
                 },
                 "data_description": {
-                    "cheapest_time_window_start": "Starting hour for searching cheapest windows (0-23)",
-                    "cheapest_time_window_end": "Ending hour for searching cheapest windows (1-24)",
-                    "cheapest_window_duration_hours": "Duration of continuous cheapest time window (1-24 hours)",
-                    "expensive_time_window_start": "Starting hour for searching most expensive windows (0-23)",
-                    "expensive_time_window_end": "Ending hour for searching most expensive windows (1-24)",
-                    "expensive_window_duration_hours": "Duration of continuous most expensive time window (1-24 hours)",
                     "use_hourly_prices": "Useful in net-billing settlements due to prosumer metering with hourly accuracy despite 15-minute prices. In this mode, the average price for a given hour is calculated from published quarter-hour prices. Settlement according to Art. 4b sec. 11 of the Ustawa o OZE"
                 }
             }
-        },
-        "error": {
-            "invalid_time_window": "Start hour must be earlier than end hour"
         }
     },
     "entity": {
         "sensor": {
             "rce_prices_today_price": {
                 "name": "Price"
-            },
-            "rce_prices_today_kwh_price": {
-                "name": "Price per kWh"
-            },
-            "rce_prices_next_hour_price": {
-                "name": "Next Hour Price"
-            },
-            "rce_prices_next_2_hours_price": {
-                "name": "Price in 2 Hours"
-            },
-            "rce_prices_next_3_hours_price": {
-                "name": "Price in 3 Hours"
-            },
-            "rce_prices_previous_hour_price": {
-                "name": "Previous Hour Price"
             },
             "rce_prices_today_avg_price": {
                 "name": "Today Average Price"
@@ -173,66 +128,6 @@
             "rce_prices_tomorrow_max_price_range": {
                 "name": "Tomorrow Most Expensive Time Range"
             },
-            "rce_prices_today_cheapest_window_start": {
-                "name": "Today Custom Cheapest Window Start"
-            },
-            "rce_prices_today_cheapest_window_end": {
-                "name": "Today Custom Cheapest Window End"
-            },
-            "rce_prices_today_cheapest_window_range": {
-                "name": "Today Custom Cheapest Window"
-            },
-            "rce_prices_today_expensive_window_start": {
-                "name": "Today Custom Most Expensive Window Start"
-            },
-            "rce_prices_today_expensive_window_end": {
-                "name": "Today Custom Most Expensive Window End"
-            },
-            "rce_prices_today_expensive_window_range": {
-                "name": "Today Custom Most Expensive Window"
-            },
-            "rce_prices_tomorrow_cheapest_window_start": {
-                "name": "Tomorrow Custom Cheapest Window Start"
-            },
-            "rce_prices_tomorrow_cheapest_window_end": {
-                "name": "Tomorrow Custom Cheapest Window End"
-            },
-            "rce_prices_tomorrow_cheapest_window_range": {
-                "name": "Tomorrow Custom Cheapest Window"
-            },
-            "rce_prices_tomorrow_expensive_window_start": {
-                "name": "Tomorrow Custom Most Expensive Window Start"
-            },
-            "rce_prices_tomorrow_expensive_window_end": {
-                "name": "Tomorrow Custom Most Expensive Window End"
-            },
-            "rce_prices_tomorrow_expensive_window_range": {
-                "name": "Custom Expensive Window Tomorrow"
-            },
-            "rce_prices_today_cheapest_window_start_timestamp": {
-                "name": "Custom Cheapest Window Start Timestamp Today"
-            },
-            "rce_prices_today_cheapest_window_end_timestamp": {
-                "name": "Custom Cheapest Window End Timestamp Today"
-            },
-            "rce_prices_today_expensive_window_start_timestamp": {
-                "name": "Custom Expensive Window Start Timestamp Today"
-            },
-            "rce_prices_today_expensive_window_end_timestamp": {
-                "name": "Custom Expensive Window End Timestamp Today"
-            },
-            "rce_prices_tomorrow_cheapest_window_start_timestamp": {
-                "name": "Custom Cheapest Window Start Timestamp Tomorrow"
-            },
-            "rce_prices_tomorrow_cheapest_window_end_timestamp": {
-                "name": "Custom Cheapest Window End Timestamp Tomorrow"
-            },
-            "rce_prices_tomorrow_expensive_window_start_timestamp": {
-                "name": "Custom Expensive Window Start Timestamp Tomorrow"
-            },
-            "rce_prices_tomorrow_expensive_window_end_timestamp": {
-                "name": "Custom Expensive Window End Timestamp Tomorrow"
-            },
             "rce_prices_today_max_price_hour_start_timestamp": {
                 "name": "Today Max Price Hour Start Timestamp"
             },
@@ -264,12 +159,6 @@
             },
             "rce_prices_today_max_price_window_active": {
                 "name": "Today Most Expensive Window Active"
-            },
-            "rce_prices_today_cheapest_window_active": {
-                "name": "Today Custom Cheapest Window Active"
-            },
-            "rce_prices_today_expensive_window_active": {
-                "name": "Today Custom Most Expensive Window Active"
             }
         }
     }

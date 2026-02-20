@@ -24,15 +24,6 @@ entities:
     name: "Current price"
     icon: mdi:cash-multiple
     secondary_info: last-updated
-  - entity: sensor.rce_pse_next_hour_price
-    name: "Next hour price"
-    icon: mdi:clock-plus-outline
-  - entity: sensor.rce_pse_next_2_hours_price
-    name: "Price in 2 hours"
-    icon: mdi:clock-fast
-  - entity: sensor.rce_pse_next_3_hours_price
-    name: "Price in 3 hours"
-    icon: mdi:clock-time-eight
   - type: section
     label: "Today's Statistics"
   - entity: sensor.rce_pse_today_avg_price
@@ -54,11 +45,6 @@ entities:
     icon: mdi:clock-time-four
   - entity: sensor.rce_pse_today_max_price_range
     name: "Most expensive time window"
-    icon: mdi:clock-alert-outline
-  - entity: sensor.rce_pse_today_cheapest_window_range
-    name: "Custom Cheapest 3 Hours"
-  - entity: sensor.rce_pse_today_expensive_window_range
-    name: "Custom Most Expensive 4 Hours"
     icon: mdi:clock-alert-outline
 # ===========================================
 # CUSTOMIZATION OPTIONS:

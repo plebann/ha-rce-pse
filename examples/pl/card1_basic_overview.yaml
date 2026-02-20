@@ -24,15 +24,6 @@ entities:
     name: "Aktualna cena"
     icon: mdi:cash-multiple
     secondary_info: last-updated
-  - entity: sensor.rce_pse_cena_nastepnej_godziny
-    name: "Cena w następnej godzinie"
-    icon: mdi:clock-plus-outline
-  - entity: sensor.rce_pse_cena_za_2_godziny
-    name: "Cena za 2 godziny"
-    icon: mdi:clock-fast
-  - entity: sensor.rce_pse_cena_za_3_godziny
-    name: "Cena za 3 godziny"
-    icon: mdi:clock-time-eight
   - type: section
     label: "Statystyki Dzisiejsze"
   - entity: sensor.rce_pse_srednia_cena_dzisiaj
@@ -54,11 +45,6 @@ entities:
     icon: mdi:clock-time-four
   - entity: sensor.rce_pse_najdrozsze_okno_czasowe_dzisiaj
     name: "Najdroższe okno czasowe"
-    icon: mdi:clock-alert-outline
-  - entity: sensor.rce_pse_konfigurowalne_najtansze_okno_dzisiaj
-    name: "Najtańsze 3 Godziny - Użytkownika"
-  - entity: sensor.rce_pse_konfigurowalne_najdrozsze_okno_dzisiaj
-    name: "Najdroższe 4 Godziny - Użytkownika"
     icon: mdi:clock-alert-outline
 # ===========================================
 # CUSTOMIZATION OPTIONS:

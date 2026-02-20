@@ -5,27 +5,12 @@
                 "title": "Konfiguracja RCE Prices",
                 "description": "Skonfiguruj integrację RCE Prices",
                 "data": {
-                    "cheapest_time_window_start": "Najtańsze - początek przeszukiwania (godzina)",
-                    "cheapest_time_window_end": "Najtańsze - koniec przeszukiwania (godzina)",
-                    "cheapest_window_duration_hours": "Najtańsze - długość poszukiwanego okna (godziny)",
-                    "expensive_time_window_start": "Najdroższe - początek przeszukiwania (godzina)",
-                    "expensive_time_window_end": "Najdroższe - koniec przeszukiwania (godzina)",
-                    "expensive_window_duration_hours": "Najdroższe - długość poszukiwanego okna (godziny)",
                     "use_hourly_prices": "Korzystaj ze średnich cen godzinowych"
                 },
                 "data_description": {
-                    "cheapest_time_window_start": "Godzina początkowa dla poszukiwania najtańszych okien (0-23)",
-                    "cheapest_time_window_end": "Godzina końcowa dla poszukiwania najtańszych okien (1-24)",
-                    "cheapest_window_duration_hours": "Długość ciągłego najtańszego okna czasowego (1-24 godzin)",
-                    "expensive_time_window_start": "Godzina początkowa dla poszukiwania najdroższych okien (0-23)",
-                    "expensive_time_window_end": "Godzina końcowa dla poszukiwania najdroższych okien (1-24)",
-                    "expensive_window_duration_hours": "Długość ciągłego najdroższego okna czasowego (1-24 godzin)",
                     "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE"
                 }
             }
-        },
-        "error": {
-            "invalid_time_window": "Godzina początku musi być wcześniejsza niż godzina końca"
         },
         "abort": {
             "single_instance_allowed": "Dozwolona jest tylko jedna konfiguracja RCE Prices."
@@ -37,48 +22,18 @@
                 "title": "Ustawienia RCE Prices",
                 "description": "Zmień ustawienia integracji RCE Prices",
                 "data": {
-                    "cheapest_time_window_start": "Najtańsze - początek przeszukiwania (godzina)",
-                    "cheapest_time_window_end": "Najtańsze - koniec przeszukiwania (godzina)",
-                    "cheapest_window_duration_hours": "Najtańsze - długość poszukiwanego okna (godziny)",
-                    "expensive_time_window_start": "Najdroższe - początek przeszukiwania (godzina)",
-                    "expensive_time_window_end": "Najdroższe - koniec przeszukiwania (godzina)",
-                    "expensive_window_duration_hours": "Najdroższe - długość poszukiwanego okna (godziny)",
                     "use_hourly_prices": "Korzystaj ze średnich cen godzinowych"
                 },
                 "data_description": {
-                    "cheapest_time_window_start": "Godzina początkowa dla poszukiwania najtańszych okien (0-23)",
-                    "cheapest_time_window_end": "Godzina końcowa dla poszukiwania najtańszych okien (1-24)",
-                    "cheapest_window_duration_hours": "Długość ciągłego najtańszego okna czasowego (1-24 godzin)",
-                    "expensive_time_window_start": "Godzina początkowa dla poszukiwania najdroższych okien (0-23)",
-                    "expensive_time_window_end": "Godzina końcowa dla poszukiwania najdroższych okien (1-24)",
-                    "expensive_window_duration_hours": "Długość ciągłego najdroższego okna czasowego (1-24 godzin)",
                     "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE"
                 }
             }
-        },
-        "error": {
-            "invalid_time_window": "Godzina początku musi być wcześniejsza niż godzina końca"
         }
     },
     "entity": {
         "sensor": {
             "rce_prices_today_price": {
                 "name": "Cena"
-            },
-            "rce_prices_today_kwh_price": {
-                "name": "Cena za kWh"
-            },
-            "rce_prices_next_hour_price": {
-                "name": "Cena Następnej Godziny"
-            },
-            "rce_prices_next_2_hours_price": {
-                "name": "Cena za 2 Godziny"
-            },
-            "rce_prices_next_3_hours_price": {
-                "name": "Cena za 3 Godziny"
-            },
-            "rce_prices_previous_hour_price": {
-                "name": "Cena Poprzedniej Godziny"
             },
             "rce_prices_today_avg_price": {
                 "name": "Średnia Cena Dzisiaj"
@@ -173,66 +128,6 @@
             "rce_prices_tomorrow_max_price_range": {
                 "name": "Najdroższe Okno Czasowe Jutro"
             },
-            "rce_prices_today_cheapest_window_start": {
-                "name": "Początek Konfigurowalnego Najtańszego Okna Dzisiaj"
-            },
-            "rce_prices_today_cheapest_window_end": {
-                "name": "Koniec Konfigurowalnego Najtańszego Okna Dzisiaj"
-            },
-            "rce_prices_today_cheapest_window_range": {
-                "name": "Konfigurowalne Najtańsze Okno Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_start": {
-                "name": "Początek Konfigurowalnego Najdroższego Okna Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_end": {
-                "name": "Koniec Konfigurowalnego Najdroższego Okna Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_range": {
-                "name": "Konfigurowalne Najdroższe Okno Dzisiaj"
-            },
-            "rce_prices_tomorrow_cheapest_window_start": {
-                "name": "Początek Konfigurowalnego Najtańszego Okna Jutro"
-            },
-            "rce_prices_tomorrow_cheapest_window_end": {
-                "name": "Koniec Konfigurowalnego Najtańszego Okna Jutro"
-            },
-            "rce_prices_tomorrow_cheapest_window_range": {
-                "name": "Konfigurowalne Najtańsze Okno Jutro"
-            },
-            "rce_prices_tomorrow_expensive_window_start": {
-                "name": "Początek Konfigurowalnego Najdroższego Okna Jutro"
-            },
-            "rce_prices_tomorrow_expensive_window_end": {
-                "name": "Koniec Konfigurowalnego Najdroższego Okna Jutro"
-            },
-            "rce_prices_tomorrow_expensive_window_range": {
-                "name": "Konfigurowalne Najdroższe Okno Jutro"
-            },
-            "rce_prices_today_cheapest_window_start_timestamp": {
-                "name": "Timestamp Początek Konfigurowalnego Najtańszego Okna Dzisiaj"
-            },
-            "rce_prices_today_cheapest_window_end_timestamp": {
-                "name": "Timestamp Koniec Konfigurowalnego Najtańszego Okna Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_start_timestamp": {
-                "name": "Timestamp Początek Konfigurowalnego Najdroższego Okna Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_end_timestamp": {
-                "name": "Timestamp Koniec Konfigurowalnego Najdroższego Okna Dzisiaj"
-            },
-            "rce_prices_tomorrow_cheapest_window_start_timestamp": {
-                "name": "Timestamp Początek Konfigurowalnego Najtańszego Okna Jutro"
-            },
-            "rce_prices_tomorrow_cheapest_window_end_timestamp": {
-                "name": "Timestamp Koniec Konfigurowalnego Najtańszego Okna Jutro"
-            },
-            "rce_prices_tomorrow_expensive_window_start_timestamp": {
-                "name": "Timestamp Początek Konfigurowalnego Najdroższego Okna Jutro"
-            },
-            "rce_prices_tomorrow_expensive_window_end_timestamp": {
-                "name": "Timestamp Koniec Konfigurowalnego Najdroższego Okna Jutro"
-            },
             "rce_prices_today_max_price_hour_start_timestamp": {
                 "name": "Timestamp Początek Godziny Maks. Ceny Dzisiaj"
             },
@@ -264,12 +159,6 @@
             },
             "rce_prices_today_max_price_window_active": {
                 "name": "Aktywne Najdroższe Okno Dzisiaj"
-            },
-            "rce_prices_today_cheapest_window_active": {
-                "name": "Aktywne Konfigurowalne Najtańsze Okno Dzisiaj"
-            },
-            "rce_prices_today_expensive_window_active": {
-                "name": "Aktywne Konfigurowalne Najdroższe Okno Dzisiaj"
             }
         }
     }
