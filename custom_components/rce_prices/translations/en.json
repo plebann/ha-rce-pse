@@ -158,10 +158,10 @@
             "rce_prices_tomorrow_morning_2nd_best_price": {
                 "name": "Tomorrow Morning 2nd Best Price"
             },
-            "rce_prices_tomorrow_morning_best_price_timestamp": {
+            "rce_prices_tomorrow_morning_best_price_start_timestamp": {
                 "name": "Tomorrow Morning Best Price Timestamp"
             },
-            "rce_prices_tomorrow_morning_2nd_best_price_timestamp": {
+            "rce_prices_tomorrow_morning_2nd_best_price_start_timestamp": {
                 "name": "Tomorrow Morning 2nd Best Price Timestamp"
             },
             "rce_prices_tomorrow_evening_best_price": {
@@ -170,10 +170,10 @@
             "rce_prices_tomorrow_evening_2nd_best_price": {
                 "name": "Tomorrow Evening 2nd Best Price"
             },
-            "rce_prices_tomorrow_evening_best_price_timestamp": {
+            "rce_prices_tomorrow_evening_best_price_start_timestamp": {
                 "name": "Tomorrow Evening Best Price Timestamp"
             },
-            "rce_prices_tomorrow_evening_2nd_best_price_timestamp": {
+            "rce_prices_tomorrow_evening_2nd_best_price_start_timestamp": {
                 "name": "Tomorrow Evening 2nd Best Price Timestamp"
             }
         },
