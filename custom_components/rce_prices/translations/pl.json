@@ -30,6 +30,26 @@
             }
         }
     },
+    "services": {
+        "find_cheapest_window": {
+            "name": "Znajdź najtańsze okno cenowe",
+            "description": "Znajduje okno o najniższej cenie na podstawie dzisiejszych cen.",
+            "fields": {
+                "duration_hours": {
+                    "name": "Długość w godzinach",
+                    "description": "Długość okna w pełnych godzinach."
+                },
+                "start_hour": {
+                    "name": "Godzina początkowa",
+                    "description": "Godzina rozpoczęcia zakresu wyszukiwania (domyślnie: 8)."
+                },
+                "end_hour": {
+                    "name": "Godzina końcowa",
+                    "description": "Godzina zakończenia zakresu wyszukiwania (domyślnie: 16)."
+                }
+            }
+        }
+    },
     "entity": {
         "sensor": {
             "rce_prices_today_price": {

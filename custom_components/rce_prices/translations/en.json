@@ -30,6 +30,26 @@
             }
         }
     },
+    "services": {
+        "find_cheapest_window": {
+            "name": "Find cheapest price window",
+            "description": "Find the lowest-price window in today's prices.",
+            "fields": {
+                "duration_hours": {
+                    "name": "Duration in hours",
+                    "description": "Length of the window in full hours."
+                },
+                "start_hour": {
+                    "name": "Start hour",
+                    "description": "Search range start hour (default: 8)."
+                },
+                "end_hour": {
+                    "name": "End hour",
+                    "description": "Search range end hour (default: 16)."
+                }
+            }
+        }
+    },
     "entity": {
         "sensor": {
             "rce_prices_today_price": {

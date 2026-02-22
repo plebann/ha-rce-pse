@@ -1,0 +1,30 @@
+find_cheapest_window:
+  name: Find cheapest price window
+  description: Find the lowest-price window in today's prices.
+  fields:
+    duration_hours:
+      required: true
+      selector:
+        number:
+          min: 1
+          max: 8
+          step: 1
+          mode: box
+    start_hour:
+      required: false
+      default: 8
+      selector:
+        number:
+          min: 0
+          max: 23
+          step: 1
+          mode: box
+    end_hour:
+      required: false
+      default: 16
+      selector:
+        number:
+          min: 1
+          max: 24
+          step: 1
+          mode: box
