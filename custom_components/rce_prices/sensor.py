@@ -48,6 +48,14 @@ from .sensors import (
     RCETomorrowMaxPriceRangeSensor,
     RCETomorrowMedianPriceSensor,
     RCETomorrowTodayAvgComparisonSensor,
+    RCETomorrowMorningBestPriceSensor,
+    RCETomorrowMorningSecondBestPriceSensor,
+    RCETomorrowMorningBestPriceStartTimestampSensor,
+    RCETomorrowMorningSecondBestPriceStartTimestampSensor,
+    RCETomorrowEveningBestPriceSensor,
+    RCETomorrowEveningSecondBestPriceSensor,
+    RCETomorrowEveningBestPriceStartTimestampSensor,
+    RCETomorrowEveningSecondBestPriceStartTimestampSensor,
 )
 
 _LOGGER = logging.getLogger(__name__)
@@ -102,6 +110,14 @@ async def async_setup_entry(
         RCETomorrowMaxPriceRangeSensor(coordinator),
         RCETomorrowMedianPriceSensor(coordinator),
         RCETomorrowTodayAvgComparisonSensor(coordinator),
+        RCETomorrowMorningBestPriceSensor(coordinator),
+        RCETomorrowMorningSecondBestPriceSensor(coordinator),
+        RCETomorrowMorningBestPriceStartTimestampSensor(coordinator),
+        RCETomorrowMorningSecondBestPriceStartTimestampSensor(coordinator),
+        RCETomorrowEveningBestPriceSensor(coordinator),
+        RCETomorrowEveningSecondBestPriceSensor(coordinator),
+        RCETomorrowEveningBestPriceStartTimestampSensor(coordinator),
+        RCETomorrowEveningSecondBestPriceStartTimestampSensor(coordinator),
     ]
     
     _LOGGER.debug("Adding %d RCE Prices sensors to Home Assistant", len(sensors))

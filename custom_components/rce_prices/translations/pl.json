@@ -75,16 +75,16 @@
                 "name": "Timestamp Początek Drugiej Najlepszej Ceny Wieczorem Dzisiaj"
             },
             "rce_prices_today_max_price_hour_start": {
-                "name": "Początek Godziny Maks. Ceny Dzisiaj"
+                "name": "Początek Godziny Maks Dzisiaj"
             },
             "rce_prices_today_max_price_hour_end": {
-                "name": "Koniec Godziny Maks. Ceny Dzisiaj"
+                "name": "Koniec Godziny Maks Dzisiaj"
             },
             "rce_prices_today_min_price_hour_start": {
-                "name": "Początek Godziny Min. Ceny Dzisiaj"
+                "name": "Początek Godziny Min Dzisiaj"
             },
             "rce_prices_today_min_price_hour_end": {
-                "name": "Koniec Godziny Min. Ceny Dzisiaj"
+                "name": "Koniec Godziny Min Dzisiaj"
             },
             "rce_prices_today_min_price_range": {
                 "name": "Najtańsze Okno Czasowe Dzisiaj"
@@ -111,16 +111,16 @@
                 "name": "Jutro vs Dzisiaj Średnia"
             },
             "rce_prices_tomorrow_max_price_hour_start": {
-                "name": "Początek Godziny Maks. Ceny Jutro"
+                "name": "Początek Godziny Maks Jutro"
             },
             "rce_prices_tomorrow_max_price_hour_end": {
-                "name": "Koniec Godziny Maks. Ceny Jutro"
+                "name": "Koniec Godziny Maks Jutro"
             },
             "rce_prices_tomorrow_min_price_hour_start": {
-                "name": "Początek Godziny Min. Ceny Jutro"
+                "name": "Początek Godziny Min Jutro"
             },
             "rce_prices_tomorrow_min_price_hour_end": {
-                "name": "Koniec Godziny Min. Ceny Jutro"
+                "name": "Koniec Godziny Min Jutro"
             },
             "rce_prices_tomorrow_min_price_range": {
                 "name": "Najtańsze Okno Czasowe Jutro"
@@ -129,28 +129,52 @@
                 "name": "Najdroższe Okno Czasowe Jutro"
             },
             "rce_prices_today_max_price_hour_start_timestamp": {
-                "name": "Timestamp Początek Godziny Maks. Ceny Dzisiaj"
+                "name": "Początek Godziny Maks Dzisiaj"
             },
             "rce_prices_today_max_price_hour_end_timestamp": {
-                "name": "Timestamp Koniec Godziny Maks. Ceny Dzisiaj"
+                "name": "Koniec Godziny Maks Dzisiaj"
             },
             "rce_prices_today_min_price_hour_start_timestamp": {
-                "name": "Timestamp Początek Godziny Min. Ceny Dzisiaj"
+                "name": "Początek Godziny Min Dzisiaj"
             },
             "rce_prices_today_min_price_hour_end_timestamp": {
-                "name": "Timestamp Koniec Godziny Min. Ceny Dzisiaj"
+                "name": "Koniec Godziny Min Dzisiaj"
             },
             "rce_prices_tomorrow_max_price_hour_start_timestamp": {
-                "name": "Timestamp Początek Godziny Maks. Ceny Jutro"
+                "name": "Początek Godziny Maks Jutro"
             },
             "rce_prices_tomorrow_max_price_hour_end_timestamp": {
-                "name": "Timestamp Koniec Godziny Maks. Ceny Jutro"
+                "name": "Koniec Godziny Maks Jutro"
             },
             "rce_prices_tomorrow_min_price_hour_start_timestamp": {
-                "name": "Timestamp Początek Godziny Min. Ceny Jutro"
+                "name": "Początek Godziny Min Jutro"
             },
             "rce_prices_tomorrow_min_price_hour_end_timestamp": {
-                "name": "Timestamp Koniec Godziny Min. Ceny Jutro"
+                "name": "Koniec Godziny Min Jutro"
+            },
+            "rce_prices_tomorrow_morning_best_price": {
+                "name": "Najlepsza Cena Rano Jutro"
+            },
+            "rce_prices_tomorrow_morning_2nd_best_price": {
+                "name": "Druga Najlepsza Cena Rano Jutro"
+            },
+            "rce_prices_tomorrow_morning_best_price_start_timestamp": {
+                "name": "Początek Najlepszej Ceny Rano Jutro"
+            },
+            "rce_prices_tomorrow_morning_2nd_best_price_start_timestamp": {
+                "name": "Początek Drugiej Najlepszej Ceny Rano Jutro"
+            },
+            "rce_prices_tomorrow_evening_best_price": {
+                "name": "Najlepsza Cena Wieczorem Jutro"
+            },
+            "rce_prices_tomorrow_evening_2nd_best_price": {
+                "name": "Druga Najlepsza Cena Wieczorem Jutro"
+            },
+            "rce_prices_tomorrow_evening_best_price_start_timestamp": {
+                "name": "Początek Najlepszej Ceny Wieczorem Jutro"
+            },
+            "rce_prices_tomorrow_evening_2nd_best_price_start_timestamp": {
+                "name": "Początek Drugiej Najlepszej Ceny Wieczorem Jutro"
             }
         },
         "binary_sensor": {
