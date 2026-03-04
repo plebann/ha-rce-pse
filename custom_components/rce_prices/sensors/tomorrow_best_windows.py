@@ -36,6 +36,10 @@ class RCETomorrowBestWindowSensor(RCEBaseSensor):
         self._window_end_hour = window_end_hour
         self._window_rank = window_rank
 
+    @property
+    def available(self) -> bool:
+        return super().available and self.is_tomorrow_data_available()
+
     def _get_window(self) -> list[dict] | None:
         tomorrow_data = self.get_tomorrow_data()
         if not tomorrow_data:
