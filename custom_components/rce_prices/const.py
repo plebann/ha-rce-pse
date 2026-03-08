@@ -14,8 +14,10 @@ API_FIRST: Final[int] = 200
 TAX_RATE: Final[float] = 0.23
 
 CONF_USE_HOURLY_PRICES: Final[str] = "use_hourly_prices"
+CONF_MIN_PRICE_WINDOW_QUARTERS: Final[str] = "min_price_window_quarters"
 
 DEFAULT_USE_HOURLY_PRICES: Final[bool] = False 
+DEFAULT_MIN_PRICE_WINDOW_QUARTERS: Final[int] = 4
 
 MORNING_BEST_WINDOW_START_HOUR: Final[int] = 5
 MORNING_BEST_WINDOW_END_HOUR: Final[int] = 10

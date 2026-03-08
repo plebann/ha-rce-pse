@@ -104,6 +104,14 @@ This advanced option is useful for net-billing settlements due to prosumer meter
 - When enabled: Calculates hourly averages and applies the same price to all 15-minute intervals within each hour
 - Example: If hour 0 has prices [300, 320, 340, 360] PLN, all four 15-minute intervals will show 330 PLN (average)
 
+#### Minimum Price Window Length
+
+This option defines the size of the cheapest-window search using quarter-hour intervals.
+
+- **Min price window length (quarters)**: Number of 15-minute intervals used for minimum-window calculations
+  - *Default*: 4 (1 hour)
+  - *Examples*: 1 = 15 min, 4 = 1 hour, 6 = 1.5 hours, 10 = 2.5 hours
+
 ### Reconfiguring Settings
 
 You can modify these settings at any time:
@@ -129,6 +137,12 @@ The integration will automatically reload with your new settings.
 - **Today Median Price** - Median price for today
 - **Today Current vs Average** - Percentage difference between current and average price
 
+### Minimum Price Window (Today)
+- **Today Min Price Window Average Price** - Average price of the cheapest window with configured length
+- **Today Min Price Window Start Timestamp** - Start timestamp of the cheapest window
+- **Today Min Price Window End Timestamp** - End timestamp of the cheapest window
+- **Today Min Price Window Range** - Time range of the cheapest window (e.g., "14:00 - 16:30")
+
 ### Tomorrow's Statistics (available after 14:00 CET)
 - **Tomorrow Average Price** - Average price for tomorrow
 - **Tomorrow Maximum Price** - Highest price tomorrow
@@ -136,15 +150,23 @@ The integration will automatically reload with your new settings.
 - **Tomorrow Median Price** - Median price for tomorrow
 - **Tomorrow vs Today Average** - Percentage difference between tomorrow and today average
 
+### Minimum Price Window (Tomorrow)
+- **Tomorrow Min Price Window Average Price** - Average price of tomorrow's cheapest window with configured length
+- **Tomorrow Min Price Window Start Timestamp** - Start timestamp of tomorrow's cheapest window
+- **Tomorrow Min Price Window End Timestamp** - End timestamp of tomorrow's cheapest window
+- **Tomorrow Min Price Window Range** - Time range of tomorrow's cheapest window
+
+### Minimum Price Semantics
+- **Today/Tomorrow Minimum Price**: Absolute minimum of a single 15-minute period
+- **Today/Tomorrow Min Price Window Average Price**: Average price of the cheapest window (length from the "Min price window length (quarters)" option)
+
 ### Price Hours & Time Ranges
 - **Today Max Price Hour Start/End** - When the highest price period starts/ends today
 - **Today Min Price Hour Start/End** - When the lowest price period starts/ends today
 - **Today Max Price Range** - Time range of highest price period (e.g., "17:00 - 18:00")
-- **Today Min Price Range** - Time range of lowest price period (e.g., "02:00 - 03:00")
 - **Tomorrow Max Price Hour Start/End** - When the highest price period starts/ends tomorrow
 - **Tomorrow Min Price Hour Start/End** - When the lowest price period starts/ends tomorrow
 - **Tomorrow Max Price Range** - Time range of highest price period tomorrow
-- **Tomorrow Min Price Range** - Time range of lowest price period tomorrow
 
 ### Best Time Windows
 - **Today Morning Best Price** - Lowest price in morning best window
@@ -160,7 +182,6 @@ The integration provides binary sensors that indicate when you are currently wit
 
 These sensors indicate whether you are currently within the most expensive or cheapest price periods for today:
 
-- **Today Min Price Window Active** - `true` when currently within the lowest price period of the day
 - **Today Max Price Window Active** - `true` when currently within the highest price period of the day
 
 ## Debugging

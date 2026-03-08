@@ -5,10 +5,12 @@
                 "title": "Konfiguracja RCE Prices",
                 "description": "Skonfiguruj integrację RCE Prices",
                 "data": {
-                    "use_hourly_prices": "Korzystaj ze średnich cen godzinowych"
+                    "use_hourly_prices": "Korzystaj ze średnich cen godzinowych",
+                    "min_price_window_quarters": "Długość okna ceny minimalnej (kwadranse)"
                 },
                 "data_description": {
-                    "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE"
+                    "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE",
+                    "min_price_window_quarters": "Długość okna najniższej ceny wyrażona w kwadransach (np. 10 = 2,5 godziny)."
                 }
             }
         },
@@ -22,10 +24,12 @@
                 "title": "Ustawienia RCE Prices",
                 "description": "Zmień ustawienia integracji RCE Prices",
                 "data": {
-                    "use_hourly_prices": "Korzystaj ze średnich cen godzinowych"
+                    "use_hourly_prices": "Korzystaj ze średnich cen godzinowych",
+                    "min_price_window_quarters": "Długość okna ceny minimalnej (kwadranse)"
                 },
                 "data_description": {
-                    "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE"
+                    "use_hourly_prices": "Przydatne w rozliczeniach net-billing z uwagi na opomiarowanie prosumentów z dokładnością do godziny mimo cen 15 minutowych. W tym trybie obliczana jest średnia cena dla danej godziny z publikowanych cen dla kwadransów. Rozliczenie zgodnie z Art. 4b ust. 11 Ustawy o OZE",
+                    "min_price_window_quarters": "Długość okna najniższej ceny wyrażona w kwadransach (np. 10 = 2,5 godziny)."
                 }
             }
         }
@@ -106,11 +110,20 @@
             "rce_prices_today_min_price_hour_end": {
                 "name": "Koniec Godziny Min Dzisiaj"
             },
-            "rce_prices_today_min_price_range": {
-                "name": "Najtańsze Okno Czasowe Dzisiaj"
-            },
             "rce_prices_today_max_price_range": {
                 "name": "Najdroższe Okno Czasowe Dzisiaj"
+            },
+            "rce_prices_today_min_price_window_avg_price": {
+                "name": "Średnia Cena Najtańszego Okna Dzisiaj"
+            },
+            "rce_prices_today_min_price_window_start_timestamp": {
+                "name": "Początek Najtańszego Okna Dzisiaj"
+            },
+            "rce_prices_today_min_price_window_end_timestamp": {
+                "name": "Koniec Najtańszego Okna Dzisiaj"
+            },
+            "rce_prices_today_min_price_window_range": {
+                "name": "Najtańsze Okno Czasowe Dzisiaj"
             },
             "rce_prices_tomorrow_price": {
                 "name": "Cena Jutro"
@@ -142,11 +155,20 @@
             "rce_prices_tomorrow_min_price_hour_end": {
                 "name": "Koniec Godziny Min Jutro"
             },
-            "rce_prices_tomorrow_min_price_range": {
-                "name": "Najtańsze Okno Czasowe Jutro"
-            },
             "rce_prices_tomorrow_max_price_range": {
                 "name": "Najdroższe Okno Czasowe Jutro"
+            },
+            "rce_prices_tomorrow_min_price_window_avg_price": {
+                "name": "Średnia Cena Najtańszego Okna Jutro"
+            },
+            "rce_prices_tomorrow_min_price_window_start_timestamp": {
+                "name": "Początek Najtańszego Okna Jutro"
+            },
+            "rce_prices_tomorrow_min_price_window_end_timestamp": {
+                "name": "Koniec Najtańszego Okna Jutro"
+            },
+            "rce_prices_tomorrow_min_price_window_range": {
+                "name": "Najtańsze Okno Czasowe Jutro"
             },
             "rce_prices_today_max_price_hour_start_timestamp": {
                 "name": "Początek Godziny Maks Dzisiaj"
@@ -198,9 +220,6 @@
             }
         },
         "binary_sensor": {
-            "rce_prices_today_min_price_window_active": {
-                "name": "Aktywne Najtańsze Okno Dzisiaj"
-            },
             "rce_prices_today_max_price_window_active": {
                 "name": "Aktywne Najdroższe Okno Dzisiaj"
             }

@@ -60,9 +60,9 @@ class RCETomorrowMinPriceSensor(RCETomorrowStatsSensor):
         tomorrow_data = self.get_tomorrow_data()
         if not tomorrow_data:
             return None
-        
-        prices = self.calculator.get_prices_from_data(tomorrow_data)
-        return min(prices) if prices else None
+
+        min_price_records = self.calculator.find_extreme_price_records(tomorrow_data, is_max=False)
+        return float(min_price_records[0]["rce_pln"]) if min_price_records else None
 
 
 class RCETomorrowMedianPriceSensor(RCETomorrowStatsSensor):

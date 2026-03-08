@@ -56,9 +56,9 @@ class RCETodayMinPriceSensor(RCETodayStatsSensor):
         today_data = self.get_today_data()
         if not today_data:
             return None
-        
-        prices = self.calculator.get_prices_from_data(today_data)
-        return min(prices) if prices else None
+
+        min_price_records = self.calculator.find_extreme_price_records(today_data, is_max=False)
+        return float(min_price_records[0]["rce_pln"]) if min_price_records else None
 
 
 class RCETodayMedianPriceSensor(RCETodayStatsSensor):

@@ -9,7 +9,9 @@ from homeassistant.helpers import selector
 
 from .const import (
     DOMAIN,
+    CONF_MIN_PRICE_WINDOW_QUARTERS,
     CONF_USE_HOURLY_PRICES,
+    DEFAULT_MIN_PRICE_WINDOW_QUARTERS,
     DEFAULT_USE_HOURLY_PRICES,
 )
 
@@ -18,6 +20,18 @@ _LOGGER = logging.getLogger(__name__)
 CONFIG_SCHEMA = vol.Schema({
     vol.Optional(CONF_USE_HOURLY_PRICES, default=DEFAULT_USE_HOURLY_PRICES): selector.BooleanSelector(
         selector.BooleanSelectorConfig()
+    ),
+    vol.Optional(
+        CONF_MIN_PRICE_WINDOW_QUARTERS,
+        default=DEFAULT_MIN_PRICE_WINDOW_QUARTERS,
+    ): selector.NumberSelector(
+        selector.NumberSelectorConfig(
+            min=1,
+            max=96,
+            step=1,
+            mode=selector.NumberSelectorMode.BOX,
+            unit_of_measurement="×15 min",
+        )
     ),
 })
 
@@ -71,6 +85,21 @@ class RCEOptionsFlow(config_entries.OptionsFlow):
                 default=current_data.get(CONF_USE_HOURLY_PRICES, DEFAULT_USE_HOURLY_PRICES)
             ): selector.BooleanSelector(
                 selector.BooleanSelectorConfig()
+            ),
+            vol.Optional(
+                CONF_MIN_PRICE_WINDOW_QUARTERS,
+                default=current_data.get(
+                    CONF_MIN_PRICE_WINDOW_QUARTERS,
+                    DEFAULT_MIN_PRICE_WINDOW_QUARTERS,
+                ),
+            ): selector.NumberSelector(
+                selector.NumberSelectorConfig(
+                    min=1,
+                    max=96,
+                    step=1,
+                    mode=selector.NumberSelectorMode.BOX,
+                    unit_of_measurement="×15 min",
+                )
             ),
         })
 

@@ -15,15 +15,25 @@ from custom_components.rce_prices.sensors.today_stats import (
     RCETodayMedianPriceSensor,
     RCETodayCurrentVsAverageSensor,
 )
+from custom_components.rce_prices.sensors.tomorrow_stats import (
+    RCETomorrowMinPriceSensor,
+)
 from custom_components.rce_prices.sensors.today_best_windows import (
     RCETodayMorningBestPriceSensor,
     RCETodayMorningSecondBestPriceSensor,
     RCETodayEveningSecondBestPriceSensor,
 )
 from custom_components.rce_prices.sensors.today_hours import (
-    RCETodayMinPriceRangeSensor,
     RCETodayMaxPriceRangeSensor,
+    RCETodayMinPriceWindowAvgPriceSensor,
+    RCETodayMinPriceWindowRangeSensor,
+    RCETodayMinPriceWindowStartTimestampSensor,
+    RCETodayMinPriceWindowEndTimestampSensor,
 )
+from custom_components.rce_prices.sensors.tomorrow_hours import (
+    RCETomorrowMinPriceWindowAvgPriceSensor,
+)
+from custom_components.rce_prices.price_calculator import PriceCalculator
 
 
 class TestTodayMainSensors:
@@ -108,9 +118,13 @@ class TestTodayStatsSensors:
                 {"rce_pln": "250.00"},
                 {"rce_pln": "350.00"},
             ]
-            
-            state = sensor.native_value
-            assert state == 250.0
+
+            with patch.object(sensor.calculator, "find_extreme_price_records") as mock_find:
+                mock_find.return_value = [{"rce_pln": "250.00"}]
+
+                state = sensor.native_value
+                assert state == 250.0
+                mock_find.assert_called_once_with(mock_today_data.return_value, is_max=False)
 
     def test_today_median_price_sensor(self, mock_coordinator):
         sensor = RCETodayMedianPriceSensor(mock_coordinator)
@@ -282,26 +296,6 @@ class TestSensorAttributes:
 
 class TestTodayRangeSensors:
 
-    def test_today_min_price_range_sensor(self, mock_coordinator):
-        sensor = RCETodayMinPriceRangeSensor(mock_coordinator)
-        
-        assert sensor._attr_unique_id == "rce_prices_today_min_price_range"
-        assert sensor._attr_icon == "mdi:clock-time-four"
-
-    def test_today_min_price_range_calculation(self, mock_coordinator):
-        sensor = RCETodayMinPriceRangeSensor(mock_coordinator)
-        
-        with patch.object(sensor, "get_today_data") as mock_today_data:
-            mock_today_data.return_value = [
-                {"rce_pln": "300.00", "period": "10:00 - 11:00", "dtime": "2024-01-01 10:00:00"},
-                {"rce_pln": "250.00", "period": "12:00 - 13:00", "dtime": "2024-01-01 12:00:00"},
-                {"rce_pln": "250.00", "period": "13:00 - 14:00", "dtime": "2024-01-01 13:00:00"},
-                {"rce_pln": "350.00", "period": "15:00 - 16:00", "dtime": "2024-01-01 15:00:00"},
-            ]
-            
-            state = sensor.native_value
-            assert state == "12:00 - 14:00"
-
     def test_today_max_price_range_sensor(self, mock_coordinator):
         sensor = RCETodayMaxPriceRangeSensor(mock_coordinator)
         
@@ -324,7 +318,6 @@ class TestTodayRangeSensors:
 
     def test_range_sensors_no_data(self, mock_coordinator):
         sensors = [
-            RCETodayMinPriceRangeSensor(mock_coordinator),
             RCETodayMaxPriceRangeSensor(mock_coordinator),
         ]
         
@@ -541,3 +534,145 @@ class TestTomorrowMainSensor:
                         price = sensor.native_value
                         assert price == 330.00
                         mock_get_price.assert_called_once_with(mock_now.return_value) 
+
+
+class TestTomorrowStatsSensors:
+
+    def test_tomorrow_min_price_sensor(self, mock_coordinator):
+        sensor = RCETomorrowMinPriceSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_prices_tomorrow_min_price"
+
+    def test_tomorrow_min_price_calculation(self, mock_coordinator):
+        sensor = RCETomorrowMinPriceSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_tomorrow_data") as mock_tomorrow_data:
+            mock_tomorrow_data.return_value = [
+                {"rce_pln": "310.00"},
+                {"rce_pln": "210.00"},
+                {"rce_pln": "410.00"},
+            ]
+
+            with patch.object(sensor.calculator, "find_extreme_price_records") as mock_find:
+                mock_find.return_value = [{"rce_pln": "210.00"}]
+
+                state = sensor.native_value
+                assert state == 210.0
+                mock_find.assert_called_once_with(mock_tomorrow_data.return_value, is_max=False)
+
+
+class TestMinPriceWindowSensors:
+
+    def test_today_min_price_window_avg_price_sensor(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowAvgPriceSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_prices_today_min_price_window_avg_price"
+        assert sensor._attr_native_unit_of_measurement == "PLN/MWh"
+
+    def test_today_min_price_window_avg_price_calculation(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowAvgPriceSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [
+                {"dtime": "2024-01-01 10:15:00", "rce_pln": "300.00"},
+                {"dtime": "2024-01-01 10:30:00", "rce_pln": "200.00"},
+            ]
+
+            with patch.object(sensor.coordinator, "_get_config_value", return_value=10) as mock_get_config:
+                with patch.object(sensor.calculator, "find_cheapest_window") as mock_find_window:
+                    mock_find_window.return_value = [
+                        {"dtime": "2024-01-01 10:15:00", "rce_pln": "300.00"},
+                        {"dtime": "2024-01-01 10:30:00", "rce_pln": "200.00"},
+                    ]
+
+                    state = sensor.native_value
+
+                    assert state == 250.0
+                    mock_get_config.assert_called_once()
+                    mock_find_window.assert_called_once_with(mock_today_data.return_value, 10)
+
+    def test_today_min_price_window_range_sensor(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "_get_min_price_window", return_value=[{"dtime": "2024-01-01 10:15:00"}]):
+            with patch.object(
+                sensor,
+                "_get_window_boundaries",
+                return_value=(
+                    dt_util.parse_datetime("2024-01-01T10:00:00+01:00"),
+                    dt_util.parse_datetime("2024-01-01T12:30:00+01:00"),
+                ),
+            ):
+                state = sensor.native_value
+                assert state == "10:00 - 12:30"
+
+    def test_today_min_price_window_start_timestamp_sensor(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowStartTimestampSensor(mock_coordinator)
+
+        expected_start = dt_util.parse_datetime("2024-01-01T10:00:00+01:00")
+        with patch.object(sensor, "_get_min_price_window", return_value=[{"dtime": "2024-01-01 10:15:00"}]):
+            with patch.object(sensor, "_get_window_boundaries", return_value=(expected_start, expected_start)):
+                state = sensor.native_value
+                assert state == expected_start
+
+    def test_today_min_price_window_end_timestamp_sensor(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowEndTimestampSensor(mock_coordinator)
+
+        expected_end = dt_util.parse_datetime("2024-01-01T12:30:00+01:00")
+        with patch.object(sensor, "_get_min_price_window", return_value=[{"dtime": "2024-01-01 10:15:00"}]):
+            with patch.object(sensor, "_get_window_boundaries", return_value=(expected_end, expected_end)):
+                state = sensor.native_value
+                assert state == expected_end
+
+    def test_tomorrow_min_price_window_avg_price_calculation(self, mock_coordinator):
+        sensor = RCETomorrowMinPriceWindowAvgPriceSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_tomorrow_data") as mock_tomorrow_data:
+            mock_tomorrow_data.return_value = [
+                {"dtime": "2024-01-02 10:15:00", "rce_pln": "180.00"},
+                {"dtime": "2024-01-02 10:30:00", "rce_pln": "220.00"},
+            ]
+
+            with patch.object(sensor.coordinator, "_get_config_value", return_value=6):
+                with patch.object(sensor.calculator, "find_cheapest_window") as mock_find_window:
+                    mock_find_window.return_value = [
+                        {"dtime": "2024-01-02 10:15:00", "rce_pln": "180.00"},
+                        {"dtime": "2024-01-02 10:30:00", "rce_pln": "220.00"},
+                    ]
+
+                    state = sensor.native_value
+
+                    assert state == 200.0
+                    mock_find_window.assert_called_once_with(mock_tomorrow_data.return_value, 6)
+
+
+class TestPriceCalculatorCheapestWindow:
+
+    def test_find_cheapest_window_returns_requested_quarters(self):
+        data = [
+            {"dtime": "2024-01-01 10:15:00", "rce_pln": "300.00"},
+            {"dtime": "2024-01-01 10:30:00", "rce_pln": "100.00"},
+            {"dtime": "2024-01-01 10:45:00", "rce_pln": "100.00"},
+            {"dtime": "2024-01-01 11:00:00", "rce_pln": "300.00"},
+            {"dtime": "2024-01-01 11:15:00", "rce_pln": "400.00"},
+        ]
+
+        result = PriceCalculator.find_cheapest_window(data, 2)
+
+        assert len(result) == 2
+        assert result[0]["dtime"] == "2024-01-01 10:30:00"
+        assert result[1]["dtime"] == "2024-01-01 10:45:00"
+
+    def test_find_cheapest_window_skips_non_continuous_windows(self):
+        data = [
+            {"dtime": "2024-01-01 10:15:00", "rce_pln": "100.00"},
+            {"dtime": "2024-01-01 10:45:00", "rce_pln": "100.00"},
+            {"dtime": "2024-01-01 11:00:00", "rce_pln": "300.00"},
+            {"dtime": "2024-01-01 11:15:00", "rce_pln": "300.00"},
+        ]
+
+        result = PriceCalculator.find_cheapest_window(data, 2)
+
+        assert len(result) == 2
+        assert result[0]["dtime"] == "2024-01-01 10:45:00"
+        assert result[1]["dtime"] == "2024-01-01 11:00:00"

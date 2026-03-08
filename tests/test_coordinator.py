@@ -9,7 +9,7 @@ from homeassistant.helpers.update_coordinator import UpdateFailed
 from homeassistant.util import dt as dt_util
 
 from custom_components.rce_prices.coordinator import RCEPSEDataUpdateCoordinator
-from custom_components.rce_prices.const import CONF_USE_HOURLY_PRICES
+from custom_components.rce_prices.const import CONF_MIN_PRICE_WINDOW_QUARTERS, CONF_USE_HOURLY_PRICES
 
 
 class TestRCEPSEDataUpdateCoordinator:
@@ -514,6 +514,16 @@ class TestRCEPSEDataUpdateCoordinator:
         
         value = coordinator._get_config_value(CONF_USE_HOURLY_PRICES, False)
         assert value is True
+
+    def test_get_config_value_min_window_quarters_with_data_fallback(self, mock_hass):
+        mock_config_entry = Mock()
+        mock_config_entry.options = None
+        mock_config_entry.data = {CONF_MIN_PRICE_WINDOW_QUARTERS: 10}
+
+        coordinator = RCEPSEDataUpdateCoordinator(mock_hass, mock_config_entry)
+
+        value = coordinator._get_config_value(CONF_MIN_PRICE_WINDOW_QUARTERS, 4)
+        assert value == 10
 
     def test_get_config_value_with_default(self, mock_hass):
         mock_config_entry = Mock()

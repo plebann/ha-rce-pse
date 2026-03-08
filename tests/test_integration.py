@@ -7,7 +7,7 @@ from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 
 from custom_components.rce_prices import async_setup_entry, async_unload_entry
-from custom_components.rce_prices.config_flow import RCEConfigFlow
+from custom_components.rce_prices.config_flow import RCEConfigFlow, RCEOptionsFlow
 from custom_components.rce_prices.const import DOMAIN
 
 
@@ -109,6 +109,51 @@ class TestRCEPSEConfigFlow:
                 
                 assert result["type"] == "create_entry"
                 mock_create_entry.assert_called_once_with(title="RCE Prices", data=user_input)
+
+    @pytest.mark.asyncio
+    async def test_config_flow_user_step_with_min_window_quarters_option(self, mock_hass):
+        flow = RCEConfigFlow()
+        flow.hass = mock_hass
+        flow.flow_id = "test_flow_id"
+        flow.context = {}
+
+        mock_hass.config_entries = Mock()
+        mock_hass.config_entries.flow = Mock()
+        mock_hass.config_entries.flow.async_progress_by_handler = Mock(return_value=[])
+        mock_hass.config_entries.async_entry_for_domain_unique_id = Mock(return_value=None)
+
+        with patch.object(flow, "_async_current_entries", return_value=[]):
+            with patch.object(flow, "async_create_entry") as mock_create_entry:
+                mock_create_entry.return_value = {"type": "create_entry"}
+
+                user_input = {
+                    "use_hourly_prices": False,
+                    "min_price_window_quarters": 10,
+                }
+                result = await flow.async_step_user(user_input=user_input)
+
+                assert result["type"] == "create_entry"
+                mock_create_entry.assert_called_once_with(title="RCE Prices", data=user_input)
+
+    @pytest.mark.asyncio
+    async def test_options_flow_saves_min_window_quarters_option(self, mock_hass):
+        flow = RCEOptionsFlow()
+        flow.hass = mock_hass
+        flow._config_entry = Mock()
+        flow._config_entry.options = {}
+        flow._config_entry.data = {}
+
+        with patch.object(flow, "async_create_entry") as mock_create_entry:
+            mock_create_entry.return_value = {"type": "create_entry"}
+
+            user_input = {
+                "use_hourly_prices": True,
+                "min_price_window_quarters": 12,
+            }
+            result = await flow.async_step_init(user_input=user_input)
+
+            assert result["type"] == "create_entry"
+            mock_create_entry.assert_called_once_with(title="", data=user_input)
 
     @pytest.mark.asyncio
     async def test_config_flow_user_step_no_input(self, mock_hass):

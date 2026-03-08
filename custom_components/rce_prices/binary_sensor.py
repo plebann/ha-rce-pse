@@ -8,7 +8,6 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .binary_sensors import (
-    RCETodayMinPriceWindowBinarySensor,
     RCETodayMaxPriceWindowBinarySensor,
 )
 
@@ -24,7 +23,6 @@ async def async_setup_entry(
     coordinator = hass.data[DOMAIN][config_entry.entry_id]
     
     binary_sensors = [
-        RCETodayMinPriceWindowBinarySensor(coordinator),
         RCETodayMaxPriceWindowBinarySensor(coordinator),
     ]
     

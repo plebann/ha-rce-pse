@@ -61,6 +61,50 @@ class PriceCalculator:
         return sorted(extreme_records, key=lambda x: x["dtime"])
 
     @staticmethod
+    def find_cheapest_window(data: list[dict], duration_quarters: int) -> list[dict]:
+        if not data or duration_quarters <= 0:
+            return []
+
+        sorted_data = sorted(data, key=lambda x: x["dtime"])
+
+        if len(sorted_data) < duration_quarters:
+            return []
+
+        best_window: list[dict] = []
+        best_avg_price: float | None = None
+
+        for i in range(len(sorted_data) - duration_quarters + 1):
+            window = sorted_data[i:i + duration_quarters]
+
+            is_continuous = True
+            for j in range(len(window) - 1):
+                try:
+                    curr_time = datetime.strptime(window[j]["dtime"], "%Y-%m-%d %H:%M:%S")
+                    next_time = datetime.strptime(window[j + 1]["dtime"], "%Y-%m-%d %H:%M:%S")
+
+                    if next_time != curr_time + timedelta(minutes=15):
+                        is_continuous = False
+                        break
+                except (ValueError, KeyError):
+                    is_continuous = False
+                    break
+
+            if not is_continuous:
+                continue
+
+            try:
+                window_prices = [float(record["rce_pln"]) for record in window]
+                avg_price = sum(window_prices) / len(window_prices)
+            except (ValueError, KeyError):
+                continue
+
+            if best_avg_price is None or avg_price < best_avg_price:
+                best_window = window
+                best_avg_price = avg_price
+
+        return best_window
+
+    @staticmethod
     def find_optimal_window(data: list[dict], window_start_hour: int, window_end_hour: int, 
                           duration_hours: int, is_max: bool = False) -> list[dict]:
         if not data or duration_hours <= 0:

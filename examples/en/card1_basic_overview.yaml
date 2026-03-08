@@ -40,9 +40,6 @@ entities:
     icon: mdi:percent
   - type: section
     label: "Best Time Windows Today"
-  - entity: sensor.rce_pse_today_min_price_range
-    name: "Cheapest time window"
-    icon: mdi:clock-time-four
   - entity: sensor.rce_pse_today_max_price_range
     name: "Most expensive time window"
     icon: mdi:clock-alert-outline
