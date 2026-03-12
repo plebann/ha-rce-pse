@@ -64,6 +64,18 @@ class RCETodayBestWindowSensor(RCEBaseSensor):
         except (ValueError, KeyError, IndexError):
             return None
 
+    def _get_window_boundaries(self, window: list[dict]) -> tuple[datetime, datetime] | None:
+        try:
+            first_period_end = datetime.strptime(window[0]["dtime"], "%Y-%m-%d %H:%M:%S")
+            window_start = first_period_end - timedelta(minutes=15)
+
+            last_period_end = datetime.strptime(window[-1]["dtime"], "%Y-%m-%d %H:%M:%S")
+            window_end = last_period_end
+        except (ValueError, KeyError, IndexError):
+            return None
+
+        return dt_util.as_local(window_start), dt_util.as_local(window_end)
+
 
 class RCETodayBestWindowPriceSensor(RCETodayBestWindowSensor):
     """Base sensor for best window price outputs."""
@@ -118,6 +130,35 @@ class RCETodayBestWindowStartTimestampSensor(RCETodayBestWindowSensor):
             return None
 
         return self._get_window_start(window)
+
+
+class RCETodayBestWindowRangeSensor(RCETodayBestWindowSensor):
+    """Base sensor for best window time ranges."""
+
+    def __init__(
+        self,
+        coordinator: RCEPSEDataUpdateCoordinator,
+        unique_id: str,
+        window_start_hour: int,
+        window_end_hour: int,
+        window_rank: int,
+    ) -> None:
+        """Initialize the sensor."""
+        super().__init__(coordinator, unique_id, window_start_hour, window_end_hour, window_rank)
+        self._attr_icon = "mdi:clock-time-four"
+
+    @property
+    def native_value(self) -> str | None:
+        window = self._get_window()
+        if not window:
+            return None
+
+        boundaries = self._get_window_boundaries(window)
+        if not boundaries:
+            return None
+
+        window_start, window_end = boundaries
+        return f"{window_start.strftime('%H:%M')} - {window_end.strftime('%H:%M')}"
 
 
 class RCETodayMorningBestPriceSensor(RCETodayBestWindowPriceSensor):
@@ -176,6 +217,34 @@ class RCETodayMorningSecondBestPriceStartTimestampSensor(RCETodayBestWindowStart
         )
 
 
+class RCETodayMorningBestPriceRangeSensor(RCETodayBestWindowRangeSensor):
+    """Today morning best price time range sensor."""
+
+    def __init__(self, coordinator: RCEPSEDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(
+            coordinator,
+            "today_morning_best_price_range",
+            MORNING_BEST_WINDOW_START_HOUR,
+            MORNING_BEST_WINDOW_END_HOUR,
+            0,
+        )
+
+
+class RCETodayMorningSecondBestPriceRangeSensor(RCETodayBestWindowRangeSensor):
+    """Today morning 2nd best price time range sensor."""
+
+    def __init__(self, coordinator: RCEPSEDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(
+            coordinator,
+            "today_morning_2nd_best_price_range",
+            MORNING_BEST_WINDOW_START_HOUR,
+            MORNING_BEST_WINDOW_END_HOUR,
+            1,
+        )
+
+
 class RCETodayEveningBestPriceSensor(RCETodayBestWindowPriceSensor):
     """Today evening best price (highest) sensor."""
 
@@ -218,6 +287,20 @@ class RCETodayEveningBestPriceStartTimestampSensor(RCETodayBestWindowStartTimest
         )
 
 
+class RCETodayEveningBestPriceRangeSensor(RCETodayBestWindowRangeSensor):
+    """Today evening best price time range sensor."""
+
+    def __init__(self, coordinator: RCEPSEDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(
+            coordinator,
+            "today_evening_best_price_range",
+            EVENING_BEST_WINDOW_START_HOUR,
+            EVENING_BEST_WINDOW_END_HOUR,
+            0,
+        )
+
+
 class RCETodayEveningSecondBestPriceStartTimestampSensor(RCETodayBestWindowStartTimestampSensor):
     """Today evening 2nd best price start timestamp sensor."""
 
@@ -226,6 +309,20 @@ class RCETodayEveningSecondBestPriceStartTimestampSensor(RCETodayBestWindowStart
         super().__init__(
             coordinator,
             "today_evening_2nd_best_price_start_timestamp",
+            EVENING_BEST_WINDOW_START_HOUR,
+            EVENING_BEST_WINDOW_END_HOUR,
+            1,
+        )
+
+
+class RCETodayEveningSecondBestPriceRangeSensor(RCETodayBestWindowRangeSensor):
+    """Today evening 2nd best price time range sensor."""
+
+    def __init__(self, coordinator: RCEPSEDataUpdateCoordinator) -> None:
+        """Initialize the sensor."""
+        super().__init__(
+            coordinator,
+            "today_evening_2nd_best_price_range",
             EVENING_BEST_WINDOW_START_HOUR,
             EVENING_BEST_WINDOW_END_HOUR,
             1,

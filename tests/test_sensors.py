@@ -21,7 +21,11 @@ from custom_components.rce_prices.sensors.tomorrow_stats import (
 from custom_components.rce_prices.sensors.today_best_windows import (
     RCETodayMorningBestPriceSensor,
     RCETodayMorningSecondBestPriceSensor,
+    RCETodayMorningBestPriceRangeSensor,
+    RCETodayMorningSecondBestPriceRangeSensor,
+    RCETodayEveningBestPriceRangeSensor,
     RCETodayEveningSecondBestPriceSensor,
+    RCETodayEveningSecondBestPriceRangeSensor,
 )
 from custom_components.rce_prices.sensors.today_hours import (
     RCETodayMaxPriceRangeSensor,
@@ -255,6 +259,116 @@ class TestTodayBestWindowPriceSensors:
 
             state = sensor.native_value
             assert state is None
+
+
+class TestTodayBestWindowRangeSensors:
+
+    def test_today_morning_best_range_sensor_initialization(self, mock_coordinator):
+        sensor = RCETodayMorningBestPriceRangeSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_prices_today_morning_best_price_range"
+        assert sensor._attr_icon == "mdi:clock-time-four"
+
+    def test_today_evening_second_best_range_sensor_initialization(self, mock_coordinator):
+        sensor = RCETodayEveningSecondBestPriceRangeSensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_prices_today_evening_2nd_best_price_range"
+        assert sensor._attr_icon == "mdi:clock-time-four"
+
+    def test_today_morning_best_range_sensor_value(self, mock_coordinator):
+        sensor = RCETodayMorningBestPriceRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 07:15:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 07:30:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 07:45:00", "rce_pln": "400.00"},
+                        {"dtime": "2024-01-01 08:00:00", "rce_pln": "400.00"},
+                    ],
+                ]
+
+                state = sensor.native_value
+
+                assert state == "07:00 - 08:00"
+
+    def test_today_morning_second_best_range_sensor_value(self, mock_coordinator):
+        sensor = RCETodayMorningSecondBestPriceRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 06:15:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 06:30:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 06:45:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 07:00:00", "rce_pln": "500.00"},
+                    ],
+                    [
+                        {"dtime": "2024-01-01 07:15:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 07:30:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 07:45:00", "rce_pln": "450.00"},
+                        {"dtime": "2024-01-01 08:00:00", "rce_pln": "450.00"},
+                    ],
+                ]
+
+                state = sensor.native_value
+
+                assert state == "07:00 - 08:00"
+
+    def test_today_evening_best_range_sensor_value(self, mock_coordinator):
+        sensor = RCETodayEveningBestPriceRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 17:15:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 17:30:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 17:45:00", "rce_pln": "500.00"},
+                        {"dtime": "2024-01-01 18:00:00", "rce_pln": "500.00"},
+                    ],
+                ]
+
+                state = sensor.native_value
+
+                assert state == "17:00 - 18:00"
+
+    def test_today_evening_second_best_range_sensor_no_data(self, mock_coordinator):
+        sensor = RCETodayEveningSecondBestPriceRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = []
+
+            state = sensor.native_value
+            assert state is None
+
+    def test_today_best_range_sensor_invalid_window(self, mock_coordinator):
+        sensor = RCETodayEveningSecondBestPriceRangeSensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_top_windows") as mock_find:
+                mock_find.return_value = [
+                    [
+                        {"dtime": "2024-01-01 17:15:00", "rce_pln": "500.00"},
+                    ],
+                    [
+                        {"dtime": "invalid", "rce_pln": "450.00"},
+                    ],
+                ]
+
+                state = sensor.native_value
+
+                assert state is None
 
 
 class TestSensorAttributes:

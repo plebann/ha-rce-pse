@@ -86,6 +86,12 @@
             "rce_prices_today_morning_2nd_best_price_start_timestamp": {
                 "name": "Today Morning 2nd Best Price Start Timestamp"
             },
+            "rce_prices_today_morning_best_price_range": {
+                "name": "Today Morning Best Price Time Range"
+            },
+            "rce_prices_today_morning_2nd_best_price_range": {
+                "name": "Today Morning 2nd Best Price Time Range"
+            },
             "rce_prices_today_evening_best_price": {
                 "name": "Today Evening Best Price"
             },
@@ -97,6 +103,12 @@
             },
             "rce_prices_today_evening_2nd_best_price_start_timestamp": {
                 "name": "Today Evening 2nd Best Price Start Timestamp"
+            },
+            "rce_prices_today_evening_best_price_range": {
+                "name": "Today Evening Best Price Time Range"
+            },
+            "rce_prices_today_evening_2nd_best_price_range": {
+                "name": "Today Evening 2nd Best Price Time Range"
             },
             "rce_prices_today_max_price_hour_start": {
                 "name": "Today Max Price Hour Start"
