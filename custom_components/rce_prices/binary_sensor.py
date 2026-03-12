@@ -8,6 +8,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
 from .const import DOMAIN
 from .binary_sensors import (
+    RCETodayMinPriceWindowBinarySensor,
     RCETodayMaxPriceWindowBinarySensor,
 )
 
@@ -24,6 +25,7 @@ async def async_setup_entry(
     
     binary_sensors = [
         RCETodayMaxPriceWindowBinarySensor(coordinator),
+        RCETodayMinPriceWindowBinarySensor(coordinator),
     ]
     
     _LOGGER.debug("Adding %d RCE Prices binary sensors to Home Assistant", len(binary_sensors))

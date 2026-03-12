@@ -220,6 +220,9 @@
             }
         },
         "binary_sensor": {
+            "rce_prices_today_min_price_window_active": {
+                "name": "Aktywne Najtańsze Okno Dzisiaj"
+            },
             "rce_prices_today_max_price_window_active": {
                 "name": "Aktywne Najdroższe Okno Dzisiaj"
             }

@@ -3,6 +3,7 @@ from __future__ import annotations
 from unittest.mock import patch
 
 from custom_components.rce_prices.binary_sensors.price_windows import (
+    RCETodayMinPriceWindowBinarySensor,
     RCETodayMaxPriceWindowBinarySensor,
 )
 
@@ -14,6 +15,12 @@ class TestTodayPriceWindowBinarySensors:
         
         assert sensor._attr_unique_id == "rce_prices_today_max_price_window_active"
         assert sensor._attr_icon == "mdi:clock-alert"
+
+    def test_today_min_price_window_binary_sensor_initialization(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowBinarySensor(mock_coordinator)
+
+        assert sensor._attr_unique_id == "rce_prices_today_min_price_window_active"
+        assert sensor._attr_icon == "mdi:clock-check"
 
     def test_today_max_price_window_active_when_in_window(self, mock_coordinator):
         sensor = RCETodayMaxPriceWindowBinarySensor(mock_coordinator)
@@ -51,9 +58,63 @@ class TestTodayPriceWindowBinarySensors:
                 state = sensor.is_on
                 assert state is False
 
+    def test_today_min_price_window_active_when_in_window(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowBinarySensor(mock_coordinator)
+        mock_coordinator._get_config_value.return_value = 4
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"period": "10:00 - 10:15", "rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_cheapest_window") as mock_find:
+                mock_find.return_value = [
+                    {
+                        "dtime": "2024-01-15 10:15:00",
+                        "period": "10:00 - 10:15",
+                        "rce_pln": "100.00",
+                    },
+                    {
+                        "dtime": "2024-01-15 10:30:00",
+                        "period": "10:15 - 10:30",
+                        "rce_pln": "110.00",
+                    },
+                ]
+
+                with patch.object(sensor, "is_current_time_in_window") as mock_in_window:
+                    mock_in_window.return_value = True
+
+                    state = sensor.is_on
+
+                mock_find.assert_called_once_with(mock_today_data.return_value, 4)
+                assert state is True
+
+    def test_today_min_price_window_inactive_when_outside_window(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowBinarySensor(mock_coordinator)
+        mock_coordinator._get_config_value.return_value = 4
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"period": "10:00 - 10:15", "rce_pln": "100.00"}]
+
+            with patch.object(sensor.calculator, "find_cheapest_window") as mock_find:
+                mock_find.return_value = [
+                    {
+                        "dtime": "2024-01-15 10:15:00",
+                        "period": "10:00 - 10:15",
+                        "rce_pln": "100.00",
+                    }
+                ]
+
+                with patch.object(sensor, "is_current_time_in_window") as mock_in_window:
+                    mock_in_window.return_value = False
+
+                    state = sensor.is_on
+
+                mock_find.assert_called_once_with(mock_today_data.return_value, 4)
+                assert state is False
+
     def test_price_window_binary_sensors_no_data(self, mock_coordinator):
         sensors = [
             RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
+            RCETodayMinPriceWindowBinarySensor(mock_coordinator),
         ]
         
         for sensor in sensors:
@@ -64,21 +125,52 @@ class TestTodayPriceWindowBinarySensors:
                 assert state is False
 
     def test_price_window_binary_sensors_no_extreme_records(self, mock_coordinator):
-        sensors = [
-            RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
-        ]
-        
-        for sensor in sensors:
-            with patch.object(sensor, "get_today_data") as mock_today_data:
-                mock_today_data.return_value = [
-                    {"period": "10:00 - 10:15", "rce_pln": "300.00"}
+        sensor = RCETodayMaxPriceWindowBinarySensor(mock_coordinator)
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [
+                {"period": "10:00 - 10:15", "rce_pln": "300.00"}
+            ]
+
+            with patch.object(sensor.calculator, "find_extreme_price_records") as mock_find:
+                mock_find.return_value = []
+
+                state = sensor.is_on
+                assert state is False
+
+    def test_today_min_price_window_inactive_when_no_window(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowBinarySensor(mock_coordinator)
+        mock_coordinator._get_config_value.return_value = 4
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [
+                {"period": "10:00 - 10:15", "rce_pln": "300.00"}
+            ]
+
+            with patch.object(sensor.calculator, "find_cheapest_window") as mock_find:
+                mock_find.return_value = []
+
+                state = sensor.is_on
+                assert state is False
+
+    def test_today_min_price_window_inactive_when_window_data_invalid(self, mock_coordinator):
+        sensor = RCETodayMinPriceWindowBinarySensor(mock_coordinator)
+        mock_coordinator._get_config_value.return_value = 4
+
+        with patch.object(sensor, "get_today_data") as mock_today_data:
+            mock_today_data.return_value = [{"period": "10:00 - 10:15", "rce_pln": "300.00"}]
+
+            with patch.object(sensor.calculator, "find_cheapest_window") as mock_find:
+                mock_find.return_value = [
+                    {
+                        "dtime": "invalid-dtime",
+                        "period": "10:00 - 10:15",
+                        "rce_pln": "300.00",
+                    }
                 ]
-                
-                with patch.object(sensor.calculator, "find_extreme_price_records") as mock_find:
-                    mock_find.return_value = []
-                    
-                    state = sensor.is_on
-                    assert state is False
+
+                state = sensor.is_on
+                assert state is False
 
 
 class TestBinarySensorDeviceInfo:
@@ -86,6 +178,7 @@ class TestBinarySensorDeviceInfo:
     def test_binary_sensor_device_info_consistency(self, mock_coordinator):
         sensors = [
             RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
+            RCETodayMinPriceWindowBinarySensor(mock_coordinator),
         ]
         
         for sensor in sensors:
@@ -102,22 +195,34 @@ class TestBinarySensorAvailability:
         mock_coordinator.last_update_success = True
         mock_coordinator.data = {"raw_data": [{"test": "data"}]}
         
-        sensor = RCETodayMaxPriceWindowBinarySensor(mock_coordinator)
-        
-        assert sensor.available is True
+        sensors = [
+            RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
+            RCETodayMinPriceWindowBinarySensor(mock_coordinator),
+        ]
+
+        for sensor in sensors:
+            assert sensor.available is True
 
     def test_binary_sensor_availability_no_data(self, mock_coordinator):
         mock_coordinator.last_update_success = True
         mock_coordinator.data = None
         
-        sensor = RCETodayMaxPriceWindowBinarySensor(mock_coordinator)
-        
-        assert sensor.available is False
+        sensors = [
+            RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
+            RCETodayMinPriceWindowBinarySensor(mock_coordinator),
+        ]
+
+        for sensor in sensors:
+            assert sensor.available is False
 
     def test_binary_sensor_availability_update_failed(self, mock_coordinator):
         mock_coordinator.last_update_success = False
         mock_coordinator.data = {"raw_data": [{"test": "data"}]}
         
-        sensor = RCETodayMaxPriceWindowBinarySensor(mock_coordinator)
-        
-        assert sensor.available is False 
+        sensors = [
+            RCETodayMaxPriceWindowBinarySensor(mock_coordinator),
+            RCETodayMinPriceWindowBinarySensor(mock_coordinator),
+        ]
+
+        for sensor in sensors:
+            assert sensor.available is False 
