@@ -790,3 +790,19 @@ class TestPriceCalculatorCheapestWindow:
         assert len(result) == 2
         assert result[0]["dtime"] == "2024-01-01 10:45:00"
         assert result[1]["dtime"] == "2024-01-01 11:00:00"
+
+    def test_find_cheapest_window_respects_time_guard(self):
+        data = [
+            {"dtime": "2024-01-01 05:15:00", "rce_pln": "1.00"},
+            {"dtime": "2024-01-01 05:30:00", "rce_pln": "1.00"},
+            {"dtime": "2024-01-01 06:15:00", "rce_pln": "5.00"},
+            {"dtime": "2024-01-01 06:30:00", "rce_pln": "5.00"},
+            {"dtime": "2024-01-01 16:15:00", "rce_pln": "0.00"},
+            {"dtime": "2024-01-01 16:30:00", "rce_pln": "0.00"},
+        ]
+
+        result = PriceCalculator.find_cheapest_window(data, 2)
+
+        assert len(result) == 2
+        assert result[0]["dtime"] == "2024-01-01 06:15:00"
+        assert result[1]["dtime"] == "2024-01-01 06:30:00"

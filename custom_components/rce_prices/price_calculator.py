@@ -3,6 +3,8 @@ from __future__ import annotations
 import statistics
 from datetime import datetime, timedelta
 
+from .const import MIN_PRICE_WINDOW_END_HOUR, MIN_PRICE_WINDOW_START_HOUR
+
 class PriceCalculator:
     
     @staticmethod
@@ -90,6 +92,18 @@ class PriceCalculator:
                     break
 
             if not is_continuous:
+                continue
+
+            try:
+                window_start = datetime.strptime(window[0]["dtime"], "%Y-%m-%d %H:%M:%S") - timedelta(minutes=15)
+                window_end = datetime.strptime(window[-1]["dtime"], "%Y-%m-%d %H:%M:%S")
+            except (ValueError, KeyError):
+                continue
+
+            if (window_start.hour, window_start.minute) < (MIN_PRICE_WINDOW_START_HOUR, 0):
+                continue
+
+            if (window_end.hour, window_end.minute) > (MIN_PRICE_WINDOW_END_HOUR, 0):
                 continue
 
             try:
